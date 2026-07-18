@@ -596,7 +596,7 @@ export default function FadeFinderApp() {
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
-                        justify: 'center',
+                        justifyContent: 'center',
                         gap: '0.5rem',
                       }}
                     >
