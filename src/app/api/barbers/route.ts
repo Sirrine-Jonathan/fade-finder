@@ -20,17 +20,17 @@ export async function GET(request: Request) {
             email: true,
             phone: true,
             avatarUrl: true,
+            receivedReviews: {
+              include: {
+                reviewer: {
+                  select: { firstName: true, lastName: true, avatarUrl: true },
+                },
+              },
+            },
           },
         },
         services: true,
         portfolioImages: true,
-        reviews: {
-          include: {
-            reviewer: {
-              select: { firstName: true, lastName: true, avatarUrl: true },
-            },
-          },
-        },
       },
     });
 
@@ -72,7 +72,7 @@ export async function GET(request: Request) {
             : true,
         services: barber.services,
         portfolio: barber.portfolioImages,
-        reviews: barber.reviews,
+        reviews: barber.user.receivedReviews,
       };
     });
 
