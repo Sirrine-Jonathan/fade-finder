@@ -6,7 +6,14 @@ const execAsync = promisify(exec);
 
 export async function POST() {
   try {
-    const { stdout, stderr } = await execAsync('npx prisma db push --force-reset && npx tsx prisma/seed.ts');
+    const dbUrl = process.env.DATABASE_URL || 'file:./dev.db';
+    const { stdout, stderr } = await execAsync('npx prisma db push --force-reset && npx tsx prisma/seed.ts', {
+      env: {
+        ...process.env,
+        DATABASE_URL: dbUrl,
+      },
+    });
+
     return NextResponse.json({
       success: true,
       message: 'Database successfully scrubbed and seeded!',
