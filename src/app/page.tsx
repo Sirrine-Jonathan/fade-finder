@@ -480,7 +480,7 @@ export default function FadeFinderApp() {
                       padding: '1.5rem',
                       display: 'flex',
                       flexDirection: 'column',
-                      justify: 'space-between',
+                      justifyContent: 'space-between',
                       transition: 'all 0.2s ease',
                     }}
                   >
