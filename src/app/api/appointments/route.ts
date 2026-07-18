@@ -113,3 +113,28 @@ export async function POST(request: Request) {
     );
   }
 }
+
+export async function PATCH(request: Request) {
+  try {
+    const body = await request.json();
+    const { appointmentId, status } = body;
+
+    if (!appointmentId || !status) {
+      return NextResponse.json({ success: false, error: 'Missing appointmentId or status' }, { status: 400 });
+    }
+
+    const updated = await prisma.appointment.update({
+      where: { id: appointmentId },
+      data: { status: status as AppointmentStatus },
+      include: {
+        service: true,
+        client: { select: { firstName: true, lastName: true } },
+      },
+    });
+
+    return NextResponse.json({ success: true, data: updated });
+  } catch (error) {
+    console.error('API Error PATCH /api/appointments:', error);
+    return NextResponse.json({ success: false, error: 'Failed to update appointment status' }, { status: 500 });
+  }
+}
