@@ -1,6 +1,6 @@
 # Fade Finder — Local Barbers. On Demand.
 
-![Fade Finder Logo](file:///home/enirrisky/.gemini/antigravity-cli/brain/bf7c24e6-27d2-4dad-a156-f512ca5c5b08/logo.png)
+![Fade Finder Logo](public/logo.png)
 
 ## Overview
 Fade Finder is an on-demand marketplace connecting clients with local barbers offering both mobile/house-call appointments and studio/storefront services.
