@@ -1,0 +1,39 @@
+{
+  "name": "fade-finder",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "npx --yes prisma@6.4.1 generate && next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test:e2e": "npx --yes playwright test",
+    "db:push": "npx --yes prisma@6.4.1 db push",
+    "db:seed": "npx --yes tsx@4.19.2 prisma/seed.ts",
+    "db:reset": "npx --yes prisma@6.4.1 db push --force-reset && npx --yes tsx@4.19.2 prisma/seed.ts",
+    "postinstall": "npx --yes prisma@6.4.1 generate"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.4.1",
+    "@playwright/test": "^1.50.1",
+    "lucide-react": "^0.475.0",
+    "next": "16.2.10",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "styled-components": "^6.1.15"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/styled-components": "^5.1.34",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.10",
+    "prisma": "^6.4.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5"
+  }
+}
