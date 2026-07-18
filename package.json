@@ -4,14 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx prisma generate && next build",
+    "build": "npx --yes prisma@6.4.1 generate && next build",
     "start": "next start",
     "lint": "eslint",
-    "test:e2e": "npx playwright test",
-    "db:push": "npx prisma db push",
-    "db:seed": "npx tsx prisma/seed.ts",
-    "db:reset": "npx prisma db push --force-reset && npx tsx prisma/seed.ts",
-    "postinstall": "npx prisma generate"
+    "test:e2e": "npx --yes playwright test",
+    "db:push": "npx --yes prisma@6.4.1 db push",
+    "db:seed": "npx --yes tsx@4.19.2 prisma/seed.ts",
+    "db:reset": "npx --yes prisma@6.4.1 db push --force-reset && npx --yes tsx@4.19.2 prisma/seed.ts",
+    "postinstall": "npx --yes prisma@6.4.1 generate"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
