@@ -98,7 +98,7 @@ interface Appointment {
   };
 }
 
-export default function Home() {
+export default function FadeFinderApp() {
   const [activeTab, setActiveTab] = useState<'CLIENT' | 'BARBER'>('CLIENT');
   const [barbers, setBarbers] = useState<Barber[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
