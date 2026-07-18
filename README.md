@@ -1,4 +1,6 @@
-# Fade Finder — Local Barbers. On Demand.
+# Fade Finder
+
+## Local Barbers. On Demand.
 
 ![Fade Finder Logo](public/logo.png)
 
