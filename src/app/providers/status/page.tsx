@@ -264,8 +264,6 @@ export default function VerificationStatusPage() {
 
   const status = barber?.verificationStatus || 'PENDING';
 
-  // Calculate percentage fill for 4 steps:
-  // Step 1: 0% -> Step 2: 33% -> Step 3: 66% -> Step 4: 100%
   let progressPercentage = 33;
   if (status === 'PENDING') progressPercentage = 66;
   if (status === 'APPROVED') progressPercentage = 100;
@@ -297,8 +295,8 @@ export default function VerificationStatusPage() {
           <div
             style={{
               display: 'flex',
-              justify-content: 'space-between',
-              align-items: 'center',
+              justifyContent: 'space-between',
+              alignItems: 'center',
               flexWrap: 'wrap',
               gap: '1rem',
               paddingBottom: '1.5rem',
