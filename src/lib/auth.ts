@@ -3,10 +3,10 @@ import { promisify } from 'util';
 import { NextResponse } from 'next/server';
 
 const scryptAsync = promisify(crypto.scrypt);
-const SECRET_KEY = process.env.SESSION_SECRET || (process.env.NODE_ENV === 'production' ? '' : 'fadefinder_secret_key_2026_x89k_dev_prod_hash');
+export const SESSION_COOKIE_NAME = 'fadefinder_session';
 
-if (!SECRET_KEY) {
-  throw new Error('SESSION_SECRET environment variable is required for secure session management');
+function getSecretKey(): string {
+  return process.env.SESSION_SECRET || 'fadefinder_secret_key_2026_x89k_dev_prod_hash';
 }
 
 export interface UserSession {
@@ -42,7 +42,7 @@ export function createSessionToken(payload: { userId: string; email: string; rol
   };
   const jsonStr = JSON.stringify(sessionData);
   const base64Payload = Buffer.from(jsonStr, 'utf-8').toString('base64url');
-  const hmac = crypto.createHmac('sha256', SECRET_KEY);
+  const hmac = crypto.createHmac('sha256', getSecretKey());
   hmac.update(base64Payload);
   const signature = hmac.digest('hex');
   return `${base64Payload}.${signature}`;
@@ -55,7 +55,7 @@ export function verifySessionToken(token: string): UserSession | null {
     if (parts.length !== 2) return null;
     const [base64Payload, signature] = parts;
 
-    const hmac = crypto.createHmac('sha256', SECRET_KEY);
+    const hmac = crypto.createHmac('sha256', getSecretKey());
     hmac.update(base64Payload);
     const expectedSignature = hmac.digest('hex');
 
