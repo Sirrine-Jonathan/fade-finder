@@ -28,45 +28,54 @@ enum AppointmentStatus {
   CANCELLED
 }
 
-model User {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  passwordHash String
-  role         Role     @default(CLIENT)
-  phone        String
-  firstName    String
-  lastName     String
-  avatarUrl    String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
 
-  barberProfile     BarberProfile?
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  passwordHash   String
+  role           Role     @default(CLIENT)
+  phone          String
+  firstName      String
+  lastName       String
+  avatarUrl      String?
+  mfaRecoveryKey String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  barberProfile      BarberProfile?
   clientAppointments Appointment[]  @relation("ClientAppointments")
-  givenReviews      Review[]       @relation("ReviewsGiven")
-  receivedReviews   Review[]       @relation("ReviewsReceived")
+  givenReviews       Review[]       @relation("ReviewsGiven")
+  receivedReviews    Review[]       @relation("ReviewsReceived")
 }
 
 model BarberProfile {
-  id                   String         @id @default(uuid())
-  userId               String         @unique
-  user                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                   String             @id @default(uuid())
+  userId               String             @unique
+  user                 User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  slug                 String             @unique
   bio                  String
   licenseNumber        String
-  isVerified           Boolean        @default(false)
+  isVerified           Boolean            @default(false)
+  verificationStatus   VerificationStatus @default(PENDING)
   baseAddress          String
   latitude             Float
   longitude            Float
-  maxTravelRadiusMiles Float          @default(15.0)
-  autoConfirmBookings  Boolean        @default(true)
-  rating               Float          @default(5.0)
-  reviewCount          Int            @default(0)
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
+  maxTravelRadiusMiles Float              @default(15.0)
+  autoConfirmBookings  Boolean            @default(true)
+  rating               Float              @default(5.0)
+  reviewCount          Int                @default(0)
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
 
-  services         Service[]
-  portfolioImages  PortfolioImage[]
-  availabilities   Availability[]
-  appointments     Appointment[]  @relation("BarberAppointments")
+  services        Service[]
+  portfolioImages PortfolioImage[]
+  availabilities  Availability[]
+  appointments    Appointment[]    @relation("BarberAppointments")
 }
 
 model Service {
@@ -80,7 +89,7 @@ model Service {
   houseCallPrice  Float
   createdAt       DateTime      @default(now())
 
-  appointments    Appointment[]
+  appointments Appointment[]
 }
 
 model PortfolioImage {
@@ -96,9 +105,9 @@ model Availability {
   id        String        @id @default(uuid())
   barberId  String
   barber    BarberProfile @relation(fields: [barberId], references: [id], onDelete: Cascade)
-  dayOfWeek Int           // 0 = Sunday, 1 = Monday, ... 6 = Saturday
-  startTime String        // HH:MM format, e.g. "09:00"
-  endTime   String        // HH:MM format, e.g. "17:00"
+  dayOfWeek Int // 0 = Sunday, 1 = Monday, ... 6 = Saturday
+  startTime String // HH:MM format, e.g. "09:00"
+  endTime   String // HH:MM format, e.g. "17:00"
 }
 
 model Appointment {
@@ -121,7 +130,7 @@ model Appointment {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
 
-  review          Review?
+  review Review?
 }
 
 model Review {
@@ -132,7 +141,18 @@ model Review {
   reviewer      User        @relation("ReviewsGiven", fields: [reviewerId], references: [id], onDelete: Cascade)
   revieweeId    String
   reviewee      User        @relation("ReviewsReceived", fields: [revieweeId], references: [id], onDelete: Cascade)
-  rating        Int         // 1 to 5 stars
+  rating        Int // 1 to 5 stars
   comment       String
   createdAt     DateTime    @default(now())
+}
+
+model CmsContent {
+  id             String   @id @default(uuid())
+  page           String   @unique
+  title          String
+  heroHeading    String
+  heroSubheading String
+  featuresJson   String
+  announcement   String?
+  updatedAt      DateTime @updatedAt
 }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { calculateDistanceMiles } from '@/lib/geo';
+import { VerificationStatus } from '@prisma/client';
 
 export async function GET(request: Request) {
   try {
@@ -9,8 +10,12 @@ export async function GET(request: Request) {
     const userLngStr = searchParams.get('lng');
     const serviceType = searchParams.get('type'); // 'STUDIO', 'HOUSE_CALL', or 'ALL'
     const searchQuery = searchParams.get('query')?.toLowerCase();
+    const minRatingStr = searchParams.get('minRating');
 
     const barbers = await prisma.barberProfile.findMany({
+      where: {
+        verificationStatus: VerificationStatus.APPROVED,
+      },
       include: {
         user: {
           select: {
@@ -31,11 +36,13 @@ export async function GET(request: Request) {
         },
         services: true,
         portfolioImages: true,
+        availabilities: true,
       },
     });
 
     const userLat = userLatStr ? parseFloat(userLatStr) : null;
     const userLng = userLngStr ? parseFloat(userLngStr) : null;
+    const minRating = minRatingStr ? parseFloat(minRatingStr) : null;
 
     let formatted = barbers.map((barber) => {
       let distanceMiles: number | null = null;
@@ -51,6 +58,7 @@ export async function GET(request: Request) {
       return {
         id: barber.id,
         userId: barber.userId,
+        slug: barber.slug,
         name: `${barber.user.firstName} ${barber.user.lastName}`,
         avatarUrl: barber.user.avatarUrl,
         phone: barber.user.phone,
@@ -58,6 +66,7 @@ export async function GET(request: Request) {
         bio: barber.bio,
         licenseNumber: barber.licenseNumber,
         isVerified: barber.isVerified,
+        verificationStatus: barber.verificationStatus,
         baseAddress: barber.baseAddress,
         latitude: barber.latitude,
         longitude: barber.longitude,
@@ -72,6 +81,7 @@ export async function GET(request: Request) {
             : true,
         services: barber.services,
         portfolio: barber.portfolioImages,
+        availabilities: barber.availabilities,
         reviews: barber.user.receivedReviews,
       };
     });
@@ -85,6 +95,10 @@ export async function GET(request: Request) {
           b.baseAddress.toLowerCase().includes(searchQuery) ||
           b.services.some((s) => s.name.toLowerCase().includes(searchQuery))
       );
+    }
+
+    if (minRating !== null && !isNaN(minRating)) {
+      formatted = formatted.filter((b) => b.rating >= minRating);
     }
 
     if (serviceType === 'HOUSE_CALL') {
@@ -102,7 +116,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ success: true, count: formatted.length, data: formatted });
   } catch (error) {
-    console.error('API Error /api/barbers:', error);
+    console.error('API Error GET /api/barbers:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to fetch barbers' },
       { status: 500 }

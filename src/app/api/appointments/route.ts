@@ -1,18 +1,47 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { LocationType, AppointmentStatus } from '@prisma/client';
+import { getSessionUser } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const session = await getSessionUser(request);
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
+    let whereClause = {};
+    if (session.role === 'CLIENT') {
+      whereClause = { clientId: session.userId };
+    } else if (session.role === 'BARBER') {
+      const barber = await prisma.barberProfile.findUnique({
+        where: { userId: session.userId },
+      });
+      if (barber) {
+        whereClause = { barberId: barber.id };
+      }
+    } else if (session.role === 'ADMIN') {
+      whereClause = {};
+    } else {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 403 }
+      );
+    }
+
     const appointments = await prisma.appointment.findMany({
+      where: whereClause,
       include: {
         client: {
-          select: { firstName: true, lastName: true, email: true, phone: true, avatarUrl: true },
+          select: { id: true, firstName: true, lastName: true, email: true, phone: true, avatarUrl: true },
         },
         barber: {
           include: {
             user: {
-              select: { firstName: true, lastName: true, phone: true, avatarUrl: true },
+              select: { id: true, firstName: true, lastName: true, phone: true, avatarUrl: true },
             },
           },
         },
@@ -34,9 +63,10 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const session = await getSessionUser(request);
     const body = await request.json();
     const {
-      clientId,
+      clientId: bodyClientId,
       barberId,
       serviceId,
       locationType, // 'STUDIO' or 'HOUSE_CALL'
@@ -54,11 +84,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Default to first client if none specified for demo
-    let clientToUseId = clientId;
+    let clientToUseId = session?.userId || bodyClientId;
     if (!clientToUseId) {
       const firstClient = await prisma.user.findFirst({ where: { role: 'CLIENT' } });
       if (firstClient) clientToUseId = firstClient.id;
+    }
+
+    if (!clientToUseId) {
+      return NextResponse.json({ success: false, error: 'Client identification required' }, { status: 400 });
     }
 
     const service = await prisma.service.findUnique({ where: { id: serviceId } });
