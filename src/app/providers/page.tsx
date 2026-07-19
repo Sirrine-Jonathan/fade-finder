@@ -792,7 +792,7 @@ export default function ProviderDashboardPage() {
                           ? 'warning'
                           : appt.status === 'CANCELLED'
                           ? 'danger'
-                          : 'default'
+                          : 'secondary'
                       }
                     >
                       {appt.status}
