@@ -161,10 +161,27 @@ export default function LoginPage() {
     }
   };
 
-  const handleSendRecovery = (e: React.FormEvent) => {
+  const handleSendRecovery = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!recoveryEmail) return;
-    setRecoverySent(true);
+    setLoading(true);
+    try {
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: recoveryEmail }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setRecoverySent(true);
+      } else {
+        setToast({ message: data.error || 'Failed to send reset email', type: 'error' });
+      }
+    } catch {
+      setToast({ message: 'Error sending reset request', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
