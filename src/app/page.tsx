@@ -44,6 +44,8 @@ import {
   InstallPrompt,
   SplashScreen,
 } from '@/components/ui';
+import { useAuth } from '@/components/providers/AuthProvider';
+import Link from 'next/link';
 
 interface Service {
   id: string;
@@ -120,6 +122,8 @@ interface Appointment {
 }
 
 export default function FadeFinderApp() {
+  const { user } = useAuth();
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const [activeTab, setActiveTab] = useState<'CLIENT' | 'BOOKINGS' | 'PORTAL'>('CLIENT');
   const [barbers, setBarbers] = useState<Barber[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -206,6 +210,7 @@ export default function FadeFinderApp() {
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowSearchResults(true);
     fetchBarbers();
   };
 
@@ -320,107 +325,266 @@ export default function FadeFinderApp() {
       <div style={{ flex: 1 }}>
         {activeTab === 'CLIENT' && (
           <>
-            {/* FULL WIDTH MODERN HERO SECTION */}
-            <Hero
-              showLogo={true}
-              title="Book Top Local Barbers to Your Door or Studio"
-              subtitle="Compare barbers by travel radius, customer ratings, DOPL license verification, and dual-tier studio vs. house call pricing."
-              badgeText="Mobile House Calls & Studio Cuts"
-            >
-              {/* SEARCH & FILTER BAR IN HERO */}
-              <form onSubmit={handleSearchSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                  <div style={{ flex: 1, minWidth: '240px' }}>
-                    <Input
-                      placeholder="Search barber, service (Fade, Beard), address..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      icon={<Search size={18} />}
-                    />
-                  </div>
-                  <Button type="submit" variant="primary" size="md">
-                    Search
-                  </Button>
-                </div>
-
-                {/* LOCATION & SERVICE TYPE FILTERS */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <MapPinIcon size={16} color="#0d9488" />
-                    <span style={{ fontSize: '0.85rem', color: '#cbd5e1' }}>
-                      Location: <strong>{locationName}</strong>
-                    </span>
-                    <Button type="button" variant="ghost" size="sm" icon={<Compass size={13} />} onClick={handleUseGPS}>
-                      GPS
-                    </Button>
-                  </div>
-
-                  <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
-                    {(['ALL', 'HOUSE_CALL', 'STUDIO'] as const).map((type) => (
-                      <Button
-                        key={type}
-                        type="button"
-                        variant={serviceTypeFilter === type ? 'primary' : 'secondary'}
-                        size="sm"
-                        onClick={() => setServiceTypeFilter(type)}
-                      >
-                        {type === 'ALL' && 'All Types'}
-                        {type === 'HOUSE_CALL' && '🚗 House Call'}
-                        {type === 'STUDIO' && '💈 In-Studio'}
+            {!user && !showSearchResults ? (
+              /* LOGGED OUT LANDING PAGE */
+              <>
+                <Hero
+                  showLogo={true}
+                  title="Book Top Local Barbers to Your Door or Studio"
+                  subtitle="Compare barbers by travel radius, customer ratings, DOPL license verification, and dual-tier studio vs. house call pricing."
+                  badgeText="Mobile House Calls & Studio Cuts"
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
+                    {/* SEARCH INPUT BAR PREVIEW */}
+                    <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1, minWidth: '240px' }}>
+                        <Input
+                          placeholder="Search barber, service (Fade, Beard), address..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          icon={<Search size={18} />}
+                        />
+                      </div>
+                      <Button type="submit" variant="primary" size="md">
+                        Find Barbers
                       </Button>
-                    ))}
+                    </form>
+
+                    {/* CALL TO ACTION BUTTONS */}
+                    <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', paddingTop: '0.5rem' }}>
+                      <Link href="/register">
+                        <Button variant="primary" size="lg">Get Started</Button>
+                      </Link>
+                      <Link href="/login">
+                        <Button variant="secondary" size="lg">Sign In</Button>
+                      </Link>
+                      <Button variant="outline" size="lg" onClick={() => setShowSearchResults(true)}>
+                        Explore All Barbers
+                      </Button>
+                      <Link href="/register?role=PROVIDER" style={{ color: '#2dd4bf', fontWeight: 600, fontSize: '0.9rem', marginLeft: '0.5rem' }}>
+                        For Barbers &rarr;
+                      </Link>
+                    </div>
                   </div>
-                </div>
+                </Hero>
 
-                {/* ADVANCED FILTER DROPDOWNS */}
-                <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', paddingTop: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: '#94a3b8' }}>
-                    <SlidersHorizontal size={14} /> Min Rating:
-                    <select
-                      value={minRatingFilter}
-                      onChange={(e) => setMinRatingFilter(parseFloat(e.target.value))}
-                      style={{ backgroundColor: '#0b1318', border: '1px solid #334155', color: '#fff', padding: '0.25rem 0.5rem', borderRadius: '6px', fontSize: '0.8rem' }}
-                    >
-                      <option value={0}>Any Rating</option>
-                      <option value={4.5}>4.5+ ⭐</option>
-                      <option value={4.8}>4.8+ ⭐</option>
-                      <option value={5.0}>5.0 ⭐ Only</option>
-                    </select>
+                <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1.25rem' }}>
+                  <InstallPrompt />
+
+                  {/* VALUE PROPOSITION PITCH GRID */}
+                  <div style={{ marginBottom: '3rem' }}>
+                    <h2 style={{ textAlign: 'center', fontSize: '1.8rem', fontWeight: 800, marginBottom: '0.5rem' }}>
+                      Why Book With Fade Finder?
+                    </h2>
+                    <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.95rem', marginBottom: '2rem' }}>
+                      The premier platform connecting clients with licensed mobile and studio barbers.
+                    </p>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+                      <Card variant="glass" style={{ padding: '1.5rem', textAlignment: 'left' }}>
+                        <Car size={32} color="#2dd4bf" style={{ marginBottom: '1rem' }} />
+                        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem' }}>Mobile House Calls</h3>
+                        <p style={{ color: '#cbd5e1', fontSize: '0.875rem', lineHeight: 1.5 }}>
+                          Get a haircut delivered to your house, office, or hotel. Your barber arrives equipped with standard sanitation and tools.
+                        </p>
+                      </Card>
+
+                      <Card variant="glass" style={{ padding: '1.5rem' }}>
+                        <Award size={32} color="#f59e0b" style={{ marginBottom: '1rem' }} />
+                        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem' }}>DOPL Vetted & Verified</h3>
+                        <p style={{ color: '#cbd5e1', fontSize: '0.875rem', lineHeight: 1.5 }}>
+                          Every provider's Utah DOPL barber license and standing is verified before they take client appointments.
+                        </p>
+                      </Card>
+
+                      <Card variant="glass" style={{ padding: '1.5rem' }}>
+                        <Building2 size={32} color="#38bdf8" style={{ marginBottom: '1rem' }} />
+                        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem' }}>Transparent Dual Pricing</h3>
+                        <p style={{ color: '#cbd5e1', fontSize: '0.875rem', lineHeight: 1.5 }}>
+                          Compare side-by-side rates for in-studio chair cuts versus mobile travel house calls upfront.
+                        </p>
+                      </Card>
+                    </div>
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: '#94a3b8' }}>
-                    <Car size={14} /> Max Travel Distance:
-                    <select
-                      value={maxRadiusFilter}
-                      onChange={(e) => setMaxRadiusFilter(parseInt(e.target.value))}
-                      style={{ backgroundColor: '#0b1318', border: '1px solid #334155', color: '#fff', padding: '0.25rem 0.5rem', borderRadius: '6px', fontSize: '0.8rem' }}
-                    >
-                      <option value={50}>Any Distance</option>
-                      <option value={10}>Within 10 miles</option>
-                      <option value={15}>Within 15 miles</option>
-                      <option value={25}>Within 25 miles</option>
-                    </select>
+                  {/* HOW IT WORKS SECTION */}
+                  <div style={{ backgroundColor: '#0b1318', padding: '2.5rem 1.5rem', borderRadius: '16px', border: '1px solid #1e293b', marginBottom: '3rem' }}>
+                    <h2 style={{ textAlign: 'center', fontSize: '1.8rem', fontWeight: 800, marginBottom: '2rem' }}>How It Works</h2>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#0d9488', color: '#fff', fontWeight: 800, fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem auto' }}>1</div>
+                        <h4 style={{ fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.4rem' }}>Find Local Barbers</h4>
+                        <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Filter by location, ratings, services, or travel radius.</p>
+                      </div>
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#0d9488', color: '#fff', fontWeight: 800, fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem auto' }}>2</div>
+                        <h4 style={{ fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.4rem' }}>Choose Studio or Travel</h4>
+                        <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Select an in-studio slot or request a mobile house call to your door.</p>
+                      </div>
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#0d9488', color: '#fff', fontWeight: 800, fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem auto' }}>3</div>
+                        <h4 style={{ fontWeight: 700, fontSize: '1.05rem', marginBottom: '0.4rem' }}>Book & Get Fresh</h4>
+                        <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Receive real-time confirmation and enjoy your professional cut.</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </form>
-            </Hero>
 
-            {/* CONTAINER FOR INSTALL PROMPT & CARDS */}
-            <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.25rem 2rem 1.25rem' }}>
-              {/* INLINE DISMISSABLE PWA INSTALL PROMPT */}
-              <InstallPrompt />
+                  {/* FEATURED BARBERS SHOWCASE */}
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                      <div>
+                        <h3 style={{ fontSize: '1.3rem', fontWeight: 800 }}>Featured Top Rated Barbers</h3>
+                        <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Licensed barbers ready to service your area</p>
+                      </div>
+                      <Button variant="outline" size="sm" onClick={() => setShowSearchResults(true)}>
+                        View All Barbers ({barbers.length})
+                      </Button>
+                    </div>
 
-              {/* BARBER CARDS GRID */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-                <h3 style={{ fontSize: '1.25rem', fontWeight: 800 }}>
-                  Available Local Barbers ({barbers.length})
-                </h3>
-                {savedBarberIds.length > 0 && (
-                  <Badge variant="accent" icon={<Star size={12} fill="#f59e0b" />}>
-                    {savedBarberIds.length} Saved Barbers
-                  </Badge>
-                )}
-              </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
+                      {barbers.slice(0, 3).map((barber) => (
+                        <Card key={barber.id} variant="glass">
+                          <div style={{ display: 'flex', gap: '0.85rem', marginBottom: '0.85rem' }}>
+                            <img
+                              src={barber.avatarUrl}
+                              alt={barber.name}
+                              style={{ width: '55px', height: '55px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #0d9488' }}
+                            />
+                            <div>
+                              <h4 style={{ fontSize: '1.05rem', fontWeight: 700 }}>{barber.name}</h4>
+                              <RatingStars rating={barber.rating} reviewCount={barber.reviewCount} size="sm" />
+                              {barber.isVerified && (
+                                <span style={{ fontSize: '0.75rem', color: '#2dd4bf', fontWeight: 600 }}>DOPL Licensed</span>
+                              )}
+                            </div>
+                          </div>
+                          <p style={{ fontSize: '0.8rem', color: '#cbd5e1', marginBottom: '1rem', height: '2.5em', overflow: 'hidden' }}>
+                            {barber.bio}
+                          </p>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                            <Button variant="secondary" size="sm" onClick={() => setViewingProfile(barber)}>
+                              Details
+                            </Button>
+                            <Link href="/login" style={{ textDecoration: 'none' }}>
+                              <Button variant="primary" size="sm" fullWidth>
+                                Sign In to Book
+                              </Button>
+                            </Link>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                </main>
+              </>
+            ) : (
+              /* SEARCH DASHBOARD VIEW (LOGGED IN OR EXPLORING) */
+              <>
+                <Hero
+                  showLogo={true}
+                  title="Book Top Local Barbers to Your Door or Studio"
+                  subtitle="Compare barbers by travel radius, customer ratings, DOPL license verification, and dual-tier studio vs. house call pricing."
+                  badgeText="Mobile House Calls & Studio Cuts"
+                >
+                  {/* SEARCH & FILTER BAR IN HERO */}
+                  <form onSubmit={handleSearchSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1, minWidth: '240px' }}>
+                        <Input
+                          placeholder="Search barber, service (Fade, Beard), address..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          icon={<Search size={18} />}
+                        />
+                      </div>
+                      <Button type="submit" variant="primary" size="md">
+                        Search
+                      </Button>
+                      {!user && (
+                        <Button type="button" variant="ghost" size="md" onClick={() => setShowSearchResults(false)}>
+                          Back to Landing
+                        </Button>
+                      )}
+                    </div>
+
+                    {/* LOCATION & SERVICE TYPE FILTERS */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <MapPinIcon size={16} color="#0d9488" />
+                        <span style={{ fontSize: '0.85rem', color: '#cbd5e1' }}>
+                          Location: <strong>{locationName}</strong>
+                        </span>
+                        <Button type="button" variant="ghost" size="sm" icon={<Compass size={13} />} onClick={handleUseGPS}>
+                          GPS
+                        </Button>
+                      </div>
+
+                      <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
+                        {(['ALL', 'HOUSE_CALL', 'STUDIO'] as const).map((type) => (
+                          <Button
+                            key={type}
+                            type="button"
+                            variant={serviceTypeFilter === type ? 'primary' : 'secondary'}
+                            size="sm"
+                            onClick={() => setServiceTypeFilter(type)}
+                          >
+                            {type === 'ALL' && 'All Types'}
+                            {type === 'HOUSE_CALL' && 'House Call'}
+                            {type === 'STUDIO' && 'In-Studio'}
+                          </Button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* ADVANCED FILTER DROPDOWNS */}
+                    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', paddingTop: '0.5rem', borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: '#94a3b8' }}>
+                        <SlidersHorizontal size={14} /> Min Rating:
+                        <select
+                          value={minRatingFilter}
+                          onChange={(e) => setMinRatingFilter(parseFloat(e.target.value))}
+                          style={{ backgroundColor: '#0b1318', border: '1px solid #334155', color: '#fff', padding: '0.25rem 0.5rem', borderRadius: '6px', fontSize: '0.8rem' }}
+                        >
+                          <option value={0}>Any Rating</option>
+                          <option value={4.5}>4.5+ Rating</option>
+                          <option value={4.8}>4.8+ Rating</option>
+                          <option value={5.0}>5.0 Only</option>
+                        </select>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: '#94a3b8' }}>
+                        <Car size={14} /> Max Travel Distance:
+                        <select
+                          value={maxRadiusFilter}
+                          onChange={(e) => setMaxRadiusFilter(parseInt(e.target.value))}
+                          style={{ backgroundColor: '#0b1318', border: '1px solid #334155', color: '#fff', padding: '0.25rem 0.5rem', borderRadius: '6px', fontSize: '0.8rem' }}
+                        >
+                          <option value={50}>Any Distance</option>
+                          <option value={10}>Within 10 miles</option>
+                          <option value={15}>Within 15 miles</option>
+                          <option value={25}>Within 25 miles</option>
+                        </select>
+                      </div>
+                    </div>
+                  </form>
+                </Hero>
+
+                {/* CONTAINER FOR INSTALL PROMPT & CARDS */}
+                <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 1.25rem 2rem 1.25rem' }}>
+                  {/* INLINE DISMISSABLE PWA INSTALL PROMPT */}
+                  <InstallPrompt />
+
+                  {/* BARBER CARDS GRID */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 800 }}>
+                      Available Local Barbers ({barbers.length})
+                    </h3>
+                    {savedBarberIds.length > 0 && (
+                      <Badge variant="accent" icon={<Star size={12} fill="#f59e0b" />}>
+                        {savedBarberIds.length} Saved Barbers
+                      </Badge>
+                    )}
+                  </div>
 
               {loading ? (
                 <div style={{ textAlign: 'center', padding: '4rem 0', color: '#94a3b8' }}>
@@ -549,6 +713,8 @@ export default function FadeFinderApp() {
             </main>
           </>
         )}
+      </>
+    )}
 
         {/* BOOKINGS LIST TAB */}
         {activeTab === 'BOOKINGS' && (
