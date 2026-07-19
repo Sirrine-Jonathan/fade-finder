@@ -6,19 +6,30 @@ import { getSessionUser } from '@/lib/auth';
 export async function GET(request: Request) {
   try {
     const session = await getSessionUser(request);
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
 
     let whereClause = {};
-    if (session) {
-      if (session.role === 'CLIENT') {
-        whereClause = { clientId: session.userId };
-      } else if (session.role === 'BARBER') {
-        const barber = await prisma.barberProfile.findUnique({
-          where: { userId: session.userId },
-        });
-        if (barber) {
-          whereClause = { barberId: barber.id };
-        }
+    if (session.role === 'CLIENT') {
+      whereClause = { clientId: session.userId };
+    } else if (session.role === 'BARBER') {
+      const barber = await prisma.barberProfile.findUnique({
+        where: { userId: session.userId },
+      });
+      if (barber) {
+        whereClause = { barberId: barber.id };
       }
+    } else if (session.role === 'ADMIN') {
+      whereClause = {};
+    } else {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 403 }
+      );
     }
 
     const appointments = await prisma.appointment.findMany({

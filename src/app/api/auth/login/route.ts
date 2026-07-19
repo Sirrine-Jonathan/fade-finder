@@ -58,7 +58,6 @@ export async function POST(request: Request) {
         role: user.role,
         phone: user.phone,
         avatarUrl: user.avatarUrl,
-        mfaRecoveryKey: user.mfaRecoveryKey,
         barberProfile: user.barberProfile || null,
       },
     });

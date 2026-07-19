@@ -8,10 +8,8 @@ const execAsync = promisify(exec);
 export async function POST(request: Request) {
   try {
     const session = await getSessionUser(request);
-    const authHeader = request.headers.get('authorization');
-    
-    // Require admin session unless authorization header or non-prod test env is present
-    if (session && session.role !== 'ADMIN' && !authHeader) {
+
+    if (!session || session.role !== 'ADMIN') {
       return NextResponse.json(
         { success: false, error: 'Unauthorized: Admin access required' },
         { status: 403 }

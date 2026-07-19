@@ -38,6 +38,13 @@ export async function POST(request: Request) {
       );
     }
 
+    if (typeof password !== 'string' || password.length < 8) {
+      return NextResponse.json(
+        { success: false, error: 'Password must be at least 8 characters long' },
+        { status: 400 }
+      );
+    }
+
     const normalizedEmail = email.toLowerCase().trim();
     const existingUser = await prisma.user.findUnique({
       where: { email: normalizedEmail },

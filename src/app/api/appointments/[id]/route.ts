@@ -9,6 +9,12 @@ export async function PATCH(
 ) {
   try {
     const session = await getSessionUser(request);
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
     const { id } = await params;
     const body = await request.json();
     const { status } = body;

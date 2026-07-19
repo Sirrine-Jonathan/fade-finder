@@ -3,8 +3,11 @@ import { promisify } from 'util';
 import { NextResponse } from 'next/server';
 
 const scryptAsync = promisify(crypto.scrypt);
-export const SESSION_COOKIE_NAME = 'fadefinder_session';
-const SECRET_KEY = process.env.SESSION_SECRET || 'fadefinder_secret_key_2026_x89k_dev_prod_hash';
+const SECRET_KEY = process.env.SESSION_SECRET || (process.env.NODE_ENV === 'production' ? '' : 'fadefinder_secret_key_2026_x89k_dev_prod_hash');
+
+if (!SECRET_KEY) {
+  throw new Error('SESSION_SECRET environment variable is required for secure session management');
+}
 
 export interface UserSession {
   userId: string;
