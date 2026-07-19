@@ -1,0 +1,114 @@
+:root {
+  --bg-dark: #0b1318;
+  --bg-card: #131f26;
+  --bg-card-hover: #1b2a34;
+  --primary-teal: #0d9488;
+  --primary-teal-hover: #0f766e;
+  --accent-gold: #f59e0b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-subtle: rgba(255, 255, 255, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: #273742;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-teal);
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(19, 31, 38, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-subtle);
+}
+
+/* Touch friendly buttons */
+button, input, select {
+  touch-action: manipulation;
+}
+
+/* Mobile Navigation Dock */
+.mobile-nav-dock {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-nav-dock {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(11, 19, 24, 0.95);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border-subtle);
+    padding: 0.5rem 1rem;
+    justify-content: space-around;
+    z-index: 90;
+  }
+
+  main {
+    padding-bottom: 5rem !important;
+  }
+
+  .desktop-header-controls {
+    display: none !important;
+  }
+}
+
+/* Toast Notification Animation */
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.toast-notification {
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Pulse animation for live status */
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.pulse-dot {
+  animation: pulseGlow 2s infinite ease-in-out;
+}
