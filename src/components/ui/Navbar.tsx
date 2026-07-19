@@ -35,6 +35,12 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1rem;
+
+  @media (max-width: 768px) {
+    padding: 0.6rem 0.75rem;
+    gap: 0.5rem;
+  }
 `;
 
 const BrandLink = styled(Link)`
@@ -42,6 +48,11 @@ const BrandLink = styled(Link)`
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
+  flex-shrink: 0;
+
+  @media (max-width: 640px) {
+    gap: 0.4rem;
+  }
 `;
 
 const LogoImage = styled.img`
@@ -54,6 +65,11 @@ const LogoImage = styled.img`
 
   &:hover {
     transform: scale(1.05);
+  }
+
+  @media (max-width: 640px) {
+    width: 32px;
+    height: 32px;
   }
 `;
 
@@ -71,18 +87,43 @@ const Title = styled.h1`
   align-items: center;
   gap: 0.4rem;
   margin: 0;
+  white-space: nowrap;
+
+  @media (max-width: 640px) {
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 380px) {
+    font-size: 0.85rem;
+  }
 `;
 
 const Subtitle = styled.p`
   font-size: 0.7rem;
   color: ${({ theme }) => theme.colors.textSecondary};
   margin: 0;
+  white-space: nowrap;
+
+  @media (max-width: 640px) {
+    display: none;
+  }
 `;
 
 const NavControls = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    gap: 0.4rem;
+    max-width: 70%;
+  }
 `;
 
 const TabContainer = styled.div`
@@ -91,6 +132,12 @@ const TabContainer = styled.div`
   padding: 0.25rem;
   border-radius: ${({ theme }) => theme.radii.md};
   border: 1px solid ${({ theme }) => theme.colors.border};
+  white-space: nowrap;
+
+  @media (max-width: 640px) {
+    padding: 0.15rem;
+    gap: 0.15rem;
+  }
 `;
 
 const TabButton = styled.button<{ active: boolean }>`
@@ -103,9 +150,20 @@ const TabButton = styled.button<{ active: boolean }>`
   background-color: ${({ active, theme }) => (active ? theme.colors.primary : 'transparent')};
   color: ${({ active, theme }) => (active ? '#ffffff' : theme.colors.textSecondary)};
   transition: all ${({ theme }) => theme.transitions.fast};
+  white-space: nowrap;
 
   &:hover {
     color: ${({ theme }) => theme.colors.textPrimary};
+  }
+
+  @media (max-width: 640px) {
+    padding: 0.35rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 380px) {
+    padding: 0.25rem 0.4rem;
+    font-size: 0.7rem;
   }
 `;
 
@@ -133,6 +191,18 @@ export const Navbar: React.FC<NavbarProps> = ({
           <TabContainer>
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
+              if (tab.href) {
+                return (
+                  <Link href={tab.href} key={tab.id} style={{ textDecoration: 'none' }}>
+                    <TabButton
+                      active={isActive}
+                      onClick={() => onTabChange && onTabChange(tab.id)}
+                    >
+                      {tab.label} {tab.count !== undefined ? `(${tab.count})` : ''}
+                    </TabButton>
+                  </Link>
+                );
+              }
               return (
                 <TabButton
                   key={tab.id}

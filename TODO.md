@@ -16,3 +16,4 @@ For each of these todo items:
 
 - [x] execute PLAN.md
 - [x] search UI should be behind basic user auth
+- [x] top nav is a bit crampt on mobile, need to fix that.
