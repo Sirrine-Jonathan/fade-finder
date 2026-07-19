@@ -16,8 +16,8 @@ For each of these todo items:
 
 ## Items
 
-- [ ] logged out home page is displaying more like the search page rather than a logged out landing page.
-- [ ] update prisma according to the build output:
+- [x] logged out home page is displaying more like the search page rather than a logged out landing page.
+- [x] update prisma according to the build output:
       ┌─────────────────────────────────────────────────────────┐
       │ Update available 6.19.3 -> 7.8.0 │
       │ │
@@ -28,7 +28,7 @@ For each of these todo items:
       │ npm i --save-dev prisma@latest │
       │ npm i @prisma/client@latest │
       └─────────────────────────────────────────────────────────┘
-- [ ] specify node and npm according to the build output:
+- [x] specify node and npm according to the build output:
       engines.node (package.json): unspecified
       engines.npm (package.json): unspecified (use default)
 - [x] add morgan or some server side logging for better telemetry
