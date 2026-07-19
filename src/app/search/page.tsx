@@ -16,7 +16,7 @@ import { Toast } from '@/components/ui/Toast';
 import {
   Search, SlidersHorizontal, Compass, Car, Home as HomeIcon,
   RefreshCw, Scissors, Grid3X3, List, Star, Bookmark, BookmarkCheck,
-  Award, Calendar, Eye, X,
+  Award, Calendar, Eye, X, Lock, LogIn, UserPlus,
 } from 'lucide-react';
 
 interface Service {
@@ -290,12 +290,86 @@ const FavoritesToggle = styled.button<{ active: boolean }>`
   transition: all 0.15s ease;
 `;
 
+const AuthGateOverlay = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3.5rem 2rem;
+  margin: 3rem auto;
+  max-width: 580px;
+  background: ${({ theme }) => theme.colors.card};
+  border: 1px solid ${({ theme }) => theme.colors.cardBorder};
+  border-radius: ${({ theme }) => theme.radii.xl};
+  backdrop-filter: blur(12px);
+  box-shadow: ${({ theme }) => theme.shadows.lg};
+`;
+
+const AuthGateIconCircle = styled.div`
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: ${({ theme }) => theme.colors.primaryLight};
+  border: 2px solid ${({ theme }) => theme.colors.primary};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.colors.primaryAccent};
+  margin-bottom: 1.5rem;
+  box-shadow: ${({ theme }) => theme.shadows.glow};
+`;
+
+const AuthGateTitle = styled.h2`
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  margin-bottom: 0.75rem;
+`;
+
+const AuthGateSubtitle = styled.p`
+  font-size: 0.95rem;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  max-width: 460px;
+`;
+
+const AuthGateActions = styled.div`
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+`;
+
 export default function SearchPage() {
   const router = useRouter();
   const [barbers, setBarbers] = useState<Barber[]>([]);
   const [loading, setLoading] = useState(true);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const [toast, setToast] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function checkAuth() {
+      try {
+        const res = await fetch('/api/auth/me');
+        const data = await res.json();
+        if (data.success && data.data) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch {
+        setIsAuthenticated(false);
+      } finally {
+        setAuthLoading(false);
+      }
+    }
+    checkAuth();
+  }, []);
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
@@ -309,6 +383,7 @@ export default function SearchPage() {
   const [sortBy, setSortBy] = useState<'distance' | 'rating' | 'price'>('distance');
 
   const fetchBarbers = useCallback(async () => {
+    if (!isAuthenticated) return;
     setLoading(true);
     try {
       let url = `/api/barbers?type=${serviceType}&lat=${userCoords.lat}&lng=${userCoords.lng}`;
@@ -340,9 +415,13 @@ export default function SearchPage() {
     } finally {
       setLoading(false);
     }
-  }, [serviceType, minRating, maxDistance, userCoords, searchQuery, sortBy]);
+  }, [isAuthenticated, serviceType, minRating, maxDistance, userCoords, searchQuery, sortBy]);
 
-  useEffect(() => { fetchBarbers(); }, [fetchBarbers]);
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchBarbers();
+    }
+  }, [isAuthenticated, fetchBarbers]);
 
   const handleGPS = () => {
     if (navigator.geolocation) {
@@ -374,216 +453,228 @@ export default function SearchPage() {
     <PageWrapper>
       <Navbar activeTab="CLIENT" />
 
-      <FilterBar>
-        <FilterInner>
-          <SearchRow>
-            <div style={{ flex: 1, minWidth: '240px' }}>
-              <Input
-                placeholder="Search barber name, style, neighborhood..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                icon={<Search size={16} />}
-                id="search-query"
-              />
-            </div>
-            <Button variant="primary" size="md" onClick={fetchBarbers} id="search-submit">
-              Search
-            </Button>
-            {searchQuery && (
-              <Button variant="ghost" size="sm" icon={<X size={14} />} onClick={() => { setSearchQuery(''); fetchBarbers(); }}>
-                Clear
-              </Button>
-            )}
-          </SearchRow>
-
-          <FiltersRow>
-            <ServiceTypeButtons>
-              {(['ALL', 'HOUSE_CALL', 'STUDIO'] as const).map((t) => (
-                <TypeBtn key={t} active={serviceType === t} onClick={() => setServiceType(t)}>
-                  {t === 'ALL' ? 'All' : t === 'HOUSE_CALL' ? '🚗 House Call' : '💈 Studio'}
-                </TypeBtn>
-              ))}
-            </ServiceTypeButtons>
-
-            <FilterGroup>
-              <SlidersHorizontal size={13} /> Rating:
-              <FilterSelect value={minRating} onChange={(e) => setMinRating(parseFloat(e.target.value))} id="filter-rating">
-                <option value={0}>Any</option>
-                <option value={4}>4.0+</option>
-                <option value={4.5}>4.5+</option>
-                <option value={4.8}>4.8+</option>
-              </FilterSelect>
-            </FilterGroup>
-
-            <FilterGroup>
-              <Car size={13} /> Distance:
-              <FilterSelect value={maxDistance} onChange={(e) => setMaxDistance(parseInt(e.target.value))} id="filter-distance">
-                <option value={50}>Any</option>
-                <option value={5}>5 mi</option>
-                <option value={10}>10 mi</option>
-                <option value={25}>25 mi</option>
-              </FilterSelect>
-            </FilterGroup>
-
-            <FilterGroup>
-              Sort:
-              <FilterSelect value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)} id="filter-sort">
-                <option value="distance">Nearest First</option>
-                <option value="rating">Top Rated</option>
-                <option value="price">Lowest Price</option>
-              </FilterSelect>
-            </FilterGroup>
-
-            <LocationChip onClick={handleGPS} id="gps-button">
-              <Compass size={13} /> {locationName}
-            </LocationChip>
-
-            <FavoritesToggle
-              active={showFavoritesOnly}
-              onClick={() => setShowFavoritesOnly((v) => !v)}
-              id="favorites-toggle"
-            >
-              <Star size={13} fill={showFavoritesOnly ? '#f59e0b' : 'none'} />
-              Favorites {savedIds.length > 0 ? `(${savedIds.length})` : ''}
-            </FavoritesToggle>
-          </FiltersRow>
-        </FilterInner>
-      </FilterBar>
-
-      <Main>
-        <ResultsHeader>
-          <ResultCount>
-            {loading ? 'Searching...' : `${displayedBarbers.length} Barbers Found`}
-            {showFavoritesOnly && savedIds.length === 0 && (
-              <span style={{ fontWeight: 400, color: '#94a3b8', fontSize: '0.9rem', marginLeft: '0.5rem' }}>
-                — no saved barbers yet
-              </span>
-            )}
-          </ResultCount>
-          <ViewToggle>
-            <ToggleBtn active={view === 'grid'} onClick={() => setView('grid')} title="Grid view" id="view-grid">
-              <Grid3X3 size={16} />
-            </ToggleBtn>
-            <ToggleBtn active={view === 'list'} onClick={() => setView('list')} title="List view" id="view-list">
-              <List size={16} />
-            </ToggleBtn>
-          </ViewToggle>
-        </ResultsHeader>
-
-        {loading ? (
+      {authLoading ? (
+        <Main>
           <LoadingState>
-            <RefreshCw size={28} className="animate-spin" style={{ margin: '0 auto 1rem', display: 'block' }} />
-            <p>Finding barbers near you...</p>
+            <RefreshCw size={28} style={{ margin: '0 auto 1rem' }} />
+            <p>Verifying client authentication...</p>
           </LoadingState>
-        ) : displayedBarbers.length === 0 ? (
-          <EmptyState>
-            <Scissors size={40} style={{ margin: '0 auto 1rem', display: 'block', opacity: 0.4 }} />
-            <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem' }}>
-              No barbers match your filters
-            </h3>
-            <p style={{ fontSize: '0.9rem' }}>Try expanding your distance, lowering the minimum rating, or clearing filters.</p>
-            <Button
-              variant="outline"
-              size="md"
-              onClick={() => { setMinRating(0); setMaxDistance(50); setServiceType('ALL'); setShowFavoritesOnly(false); }}
-              style={{ marginTop: '1.5rem' }}
-            >
-              Clear All Filters
-            </Button>
-          </EmptyState>
-        ) : view === 'grid' ? (
-          <GridView>
-            {displayedBarbers.map((barber) => (
-              <BarberCard key={barber.id} variant="glass">
-                <BookmarkBtn saved={savedIds.includes(barber.id)} onClick={() => toggleSave(barber.id)}>
-                  {savedIds.includes(barber.id) ? <BookmarkCheck size={18} /> : <Bookmark size={18} />}
-                </BookmarkBtn>
-
-                <div style={{ display: 'flex', gap: '0.85rem', marginBottom: '0.75rem', paddingRight: '2rem' }}>
-                  <BarberAvatar src={barber.avatarUrl} alt={barber.name} />
-                  <BarberInfo>
-                    <BarberName>{barber.name}</BarberName>
-                    <RatingStars rating={barber.rating} reviewCount={barber.reviewCount} size="sm" />
-                    {barber.distanceMiles !== null && (
-                      <div style={{ marginTop: '0.25rem' }}>
-                        <MapPin distanceMiles={barber.distanceMiles} />
-                      </div>
-                    )}
-                  </BarberInfo>
+        </Main>
+      ) : !isAuthenticated ? (
+        <Main>
+          <AuthGateOverlay id="search-auth-gate">
+            <AuthGateIconCircle>
+              <Lock size={34} />
+            </AuthGateIconCircle>
+            <AuthGateTitle>Authentication Required</AuthGateTitle>
+            <AuthGateSubtitle>
+              Searching local barbers, filtering by travel radius, DOPL license verification, and booking haircuts requires an active client account.
+            </AuthGateSubtitle>
+            <AuthGateActions>
+              <Button variant="primary" size="lg" onClick={() => router.push('/login?redirect=/search')} id="auth-gate-login">
+                <LogIn size={18} /> Log In to Search
+              </Button>
+              <Button variant="outline" size="lg" onClick={() => router.push('/register?redirect=/search')} id="auth-gate-register">
+                <UserPlus size={18} /> Create Free Account
+              </Button>
+            </AuthGateActions>
+          </AuthGateOverlay>
+        </Main>
+      ) : (
+        <>
+          <FilterBar>
+            <FilterInner>
+              <SearchRow>
+                <div style={{ flex: 1, minWidth: '240px' }}>
+                  <Input
+                    placeholder="Search barber name, style, neighborhood..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    icon={<Search size={16} />}
+                    id="search-query"
+                  />
                 </div>
-
-                {barber.isVerified && (
-                  <Badge variant="accent" size="sm" icon={<Award size={11} />} style={{ marginBottom: '0.5rem' }}>
-                    DOPL Verified · {barber.licenseNumber}
-                  </Badge>
-                )}
-
-                <BarberBio>{barber.bio}</BarberBio>
-
-                {barber.services[0] && (
-                  <PriceTag>
-                    From ${Math.min(barber.services[0].studioPrice, barber.services[0].houseCallPrice)} · {barber.services[0].name}
-                  </PriceTag>
-                )}
-
-                <CardActions>
-                  <Button
-                    variant="secondary" size="sm" icon={<Eye size={13} />}
-                    onClick={() => router.push(`/${barber.slug || barber.id}`)}
-                    id={`view-profile-${barber.id}`}
-                  >
-                    Profile
+                <Button variant="primary" size="md" onClick={fetchBarbers} id="search-submit">
+                  Search
+                </Button>
+                {searchQuery && (
+                  <Button variant="ghost" size="sm" icon={<X size={14} />} onClick={() => { setSearchQuery(''); fetchBarbers(); }}>
+                    Clear
                   </Button>
-                  <Button
-                    variant="primary" size="sm" icon={<Calendar size={13} />}
-                    onClick={() => router.push(`/booking/${barber.slug || barber.id}`)}
-                    id={`book-${barber.id}`}
-                  >
-                    Book Appointment
-                  </Button>
-                </CardActions>
-              </BarberCard>
-            ))}
-          </GridView>
-        ) : (
-          <ListView>
-            {displayedBarbers.map((barber) => (
-              <BarberCard key={barber.id} variant="solid" list>
-                <BarberAvatar src={barber.avatarUrl} alt={barber.name} list />
-                <BarberInfo>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.25rem' }}>
-                    <BarberName>{barber.name}</BarberName>
-                    <button onClick={() => toggleSave(barber.id)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: savedIds.includes(barber.id) ? '#f59e0b' : '#64748b' }}>
-                      {savedIds.includes(barber.id) ? <BookmarkCheck size={17} /> : <Bookmark size={17} />}
-                    </button>
-                  </div>
-                  <RatingStars rating={barber.rating} reviewCount={barber.reviewCount} size="sm" />
-                  {barber.distanceMiles !== null && <MapPin distanceMiles={barber.distanceMiles} />}
-                  {barber.isVerified && (
-                    <Badge variant="accent" size="sm" icon={<Award size={11} />} style={{ marginTop: '0.35rem' }}>
-                      DOPL Verified
-                    </Badge>
-                  )}
-                  <BarberBio>{barber.bio}</BarberBio>
-                  {barber.services[0] && (
-                    <PriceTag>
-                      From ${Math.min(barber.services[0].studioPrice, barber.services[0].houseCallPrice)}
-                    </PriceTag>
-                  )}
-                  <CardActions>
-                    <Button variant="secondary" size="sm" icon={<Eye size={13} />} onClick={() => router.push(`/${barber.slug || barber.id}`)}>
-                      View Profile
-                    </Button>
-                    <Button variant="primary" size="sm" icon={<Calendar size={13} />} onClick={() => router.push(`/booking/${barber.slug || barber.id}`)}>
-                      Book Now
-                    </Button>
-                  </CardActions>
-                </BarberInfo>
-              </BarberCard>
-            ))}
-          </ListView>
-        )}
-      </Main>
+                )}
+              </SearchRow>
+
+              <FiltersRow>
+                <ServiceTypeButtons>
+                  {(['ALL', 'HOUSE_CALL', 'STUDIO'] as const).map((t) => (
+                    <TypeBtn key={t} active={serviceType === t} onClick={() => setServiceType(t)}>
+                      {t === 'ALL' ? 'All' : t === 'HOUSE_CALL' ? '🚗 House Call' : '💈 Studio'}
+                    </TypeBtn>
+                  ))}
+                </ServiceTypeButtons>
+
+                <FilterGroup>
+                  <SlidersHorizontal size={13} /> Rating:
+                  <FilterSelect value={minRating} onChange={(e) => setMinRating(parseFloat(e.target.value))} id="filter-rating">
+                    <option value={0}>Any</option>
+                    <option value={4}>4.0+</option>
+                    <option value={4.5}>4.5+</option>
+                    <option value={4.8}>4.8+</option>
+                  </FilterSelect>
+                </FilterGroup>
+
+                <FilterGroup>
+                  <Car size={13} /> Distance:
+                  <FilterSelect value={maxDistance} onChange={(e) => setMaxDistance(parseInt(e.target.value))} id="filter-distance">
+                    <option value={50}>Any</option>
+                    <option value={5}>5 mi</option>
+                    <option value={10}>10 mi</option>
+                    <option value={25}>25 mi</option>
+                  </FilterSelect>
+                </FilterGroup>
+
+                <FilterGroup>
+                  Sort:
+                  <FilterSelect value={sortBy} onChange={(e) => setSortBy(e.target.value as typeof sortBy)} id="filter-sort">
+                    <option value="distance">Nearest First</option>
+                    <option value="rating">Top Rated</option>
+                    <option value="price">Lowest Price</option>
+                  </FilterSelect>
+                </FilterGroup>
+
+                <LocationChip onClick={handleGPS} id="gps-button">
+                  <Compass size={13} /> {locationName}
+                </LocationChip>
+
+                <FavoritesToggle
+                  active={showFavoritesOnly}
+                  onClick={() => setShowFavoritesOnly((v) => !v)}
+                  id="favorites-toggle"
+                >
+                  <Star size={13} fill={showFavoritesOnly ? '#f59e0b' : 'none'} />
+                  Favorites {savedIds.length > 0 ? `(${savedIds.length})` : ''}
+                </FavoritesToggle>
+              </FiltersRow>
+            </FilterInner>
+          </FilterBar>
+
+          <Main>
+            <ResultsHeader>
+              <ResultCount>
+                {loading ? 'Searching...' : `${displayedBarbers.length} Barbers Found`}
+                {showFavoritesOnly && savedIds.length === 0 && (
+                  <span style={{ fontWeight: 400, color: '#94a3b8', fontSize: '0.9rem', marginLeft: '0.5rem' }}>
+                    — no saved barbers yet
+                  </span>
+                )}
+              </ResultCount>
+              <ViewToggle>
+                <ToggleBtn active={view === 'grid'} onClick={() => setView('grid')} title="Grid view" id="view-grid">
+                  <Grid3X3 size={16} />
+                </ToggleBtn>
+                <ToggleBtn active={view === 'list'} onClick={() => setView('list')} title="List view" id="view-list">
+                  <List size={16} />
+                </ToggleBtn>
+              </ViewToggle>
+            </ResultsHeader>
+
+            {loading ? (
+              <LoadingState>
+                <RefreshCw size={28} style={{ margin: '0 auto 1rem', display: 'block' }} />
+                <p>Finding barbers near you...</p>
+              </LoadingState>
+            ) : displayedBarbers.length === 0 ? (
+              <LoadingState>
+                <Scissors size={40} style={{ margin: '0 auto 1rem', display: 'block', opacity: 0.4 }} />
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem' }}>
+                  No barbers match your filters
+                </h3>
+                <p style={{ fontSize: '0.9rem' }}>Try expanding your distance, lowering the minimum rating, or clearing filters.</p>
+                <Button
+                  variant="outline"
+                  size="md"
+                  onClick={() => { setMinRating(0); setMaxDistance(50); setServiceType('ALL'); setShowFavoritesOnly(false); }}
+                  style={{ marginTop: '1.5rem' }}
+                >
+                  Clear All Filters
+                </Button>
+              </LoadingState>
+            ) : view === 'grid' ? (
+              <GridView>
+                {displayedBarbers.map((barber) => (
+                  <BarberCard key={barber.id}>
+                    <CardHeader>
+                      <BarberAvatar src={barber.avatarUrl || '/logo.png'} alt={barber.name} />
+                      <BarberInfo>
+                        <BarberName>{barber.name}</BarberName>
+                        <RatingStars rating={barber.rating} reviewCount={barber.reviewCount} size="sm" />
+                      </BarberInfo>
+                    </CardHeader>
+
+                    {barber.isVerified && (
+                      <Badge variant="accent" size="sm" icon={<Award size={11} />} style={{ marginBottom: '0.5rem' }}>
+                        DOPL Verified · {barber.licenseNumber}
+                      </Badge>
+                    )}
+
+                    <BioSnippet>{barber.bio}</BioSnippet>
+
+                    {barber.services[0] && (
+                      <ServicePriceRow style={{ margin: '0.5rem 0' }}>
+                        <ServicePrice>💈 ${barber.services[0].studioPrice}</ServicePrice>
+                      </ServicePriceRow>
+                    )}
+
+                    <CardActions>
+                      <Button
+                        variant="secondary" size="sm" icon={<Eye size={13} />}
+                        onClick={() => router.push(`/${barber.slug || barber.id}`)}
+                        id={`view-profile-${barber.id}`}
+                      >
+                        Profile
+                      </Button>
+                      <Button
+                        variant="primary" size="sm" icon={<Calendar size={13} />}
+                        onClick={() => router.push(`/booking/${barber.slug || barber.id}`)}
+                        id={`book-${barber.id}`}
+                      >
+                        Book Appointment
+                      </Button>
+                    </CardActions>
+                  </BarberCard>
+                ))}
+              </GridView>
+            ) : (
+              <ListView>
+                {displayedBarbers.map((barber) => (
+                  <BarberCard key={barber.id} list>
+                    <BarberAvatar src={barber.avatarUrl || '/logo.png'} alt={barber.name} list />
+                    <BarberInfo>
+                      <BarberName>{barber.name}</BarberName>
+                      <RatingStars rating={barber.rating} reviewCount={barber.reviewCount} size="sm" />
+                      <BioSnippet>{barber.bio}</BioSnippet>
+                      <CardActions style={{ marginTop: '0.5rem' }}>
+                        <Button
+                          variant="secondary" size="sm" icon={<Eye size={13} />}
+                          onClick={() => router.push(`/${barber.slug || barber.id}`)}
+                        >
+                          Profile
+                        </Button>
+                        <Button
+                          variant="primary" size="sm" icon={<Calendar size={13} />}
+                          onClick={() => router.push(`/booking/${barber.slug || barber.id}`)}
+                        >
+                          Book Appointment
+                        </Button>
+                      </CardActions>
+                    </BarberInfo>
+                  </BarberCard>
+                ))}
+              </ListView>
+            )}
+          </Main>
+        </>
+      )}
 
       {toast && <Toast message={toast} onClose={() => setToast(null)} />}
 

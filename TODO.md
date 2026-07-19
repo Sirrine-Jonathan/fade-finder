@@ -15,3 +15,4 @@ For each of these todo items:
 ## Items
 
 - [x] execute PLAN.md
+- [x] search UI should be behind basic user auth
