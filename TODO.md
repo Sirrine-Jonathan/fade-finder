@@ -16,7 +16,7 @@ For each of these todo items:
 
 ## Items
 
-- [ ] logged out home page is displaying more like the search page rather than a logged out landing page.
+- [x] logged out home page is displaying more like the search page rather than a logged out landing page.
 - [x] update prisma according to the build output:
       ┌─────────────────────────────────────────────────────────┐
       │ Update available 6.19.3 -> 7.8.0 │
