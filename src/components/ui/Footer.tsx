@@ -114,9 +114,9 @@ export const Footer: React.FC = () => {
         </Column>
 
         <Column>
-          <ColumnTitle>Admin & Legal</ColumnTitle>
-          <FooterLink href="/admin">Admin Login</FooterLink>
-          <FooterLink href="/admin/settings">Admin Settings</FooterLink>
+          <ColumnTitle>Legal & Safety</ColumnTitle>
+          <FooterLink href="#">Privacy Policy</FooterLink>
+          <FooterLink href="#">Terms of Service</FooterLink>
         </Column>
       </Container>
 
