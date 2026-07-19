@@ -204,6 +204,36 @@ const BarberCard = styled(Card)<{ list?: boolean }>`
   }
 `;
 
+const CardHeader = styled.div`
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+`;
+
+const BioSnippet = styled.p`
+  font-size: 0.82rem;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  line-height: 1.4;
+  margin: 0.5rem 0 0.75rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+`;
+
+const ServicePriceRow = styled.div`
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+`;
+
+const ServicePrice = styled.span`
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: ${({ theme }) => theme.colors.primaryAccent};
+`;
+
 const BarberAvatar = styled.img<{ list?: boolean }>`
   width: ${({ list }) => list ? '80px' : '60px'};
   height: ${({ list }) => list ? '80px' : '60px'};
