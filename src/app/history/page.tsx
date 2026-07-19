@@ -297,7 +297,7 @@ export default function HistoryPage() {
     return true;
   });
 
-  const getStatusBadgeVariant = (status: string) => {
+  const getStatusBadgeVariant = (status: string): 'success' | 'warning' | 'info' | 'danger' | 'outline' => {
     switch (status) {
       case 'CONFIRMED':
         return 'success';
@@ -308,7 +308,7 @@ export default function HistoryPage() {
       case 'CANCELLED':
         return 'danger';
       default:
-        return 'neutral';
+        return 'outline';
     }
   };
 
