@@ -14,4 +14,4 @@ For each of these todo items:
 
 ## Items
 
-- [ ] execute PLAN.md
+- [x] execute PLAN.md
