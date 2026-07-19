@@ -664,9 +664,9 @@ export default function ProviderDashboardPage() {
                 {verificationStatus}
               </Badge>
             </WelcomeTitle>
-            <WelcomeSubtitle style={{ color: '#94a3b8' }}>
+            <WelcomeSub style={{ color: '#94a3b8' }}>
               Manage your upcoming appointments, update profile details, and track your business metrics.
-            </WelcomeSubtitle>
+            </WelcomeSub>
           </WelcomeText>
 
           <Button variant="outline" size="md" onClick={() => router.push(`/providers/profile/private`)}>
