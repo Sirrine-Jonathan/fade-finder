@@ -114,9 +114,9 @@ export const Footer: React.FC = () => {
         </Column>
 
         <Column>
-          <ColumnTitle>Legal & Safety</ColumnTitle>
-          <FooterLink href="#">Privacy Policy</FooterLink>
-          <FooterLink href="#">Terms of Service</FooterLink>
+          <ColumnTitle>Trust & Compliance</ColumnTitle>
+          <FooterLink href="/providers">DOPL License Standards</FooterLink>
+          <FooterLink href="/register">Client Terms & Privacy</FooterLink>
         </Column>
       </Container>
 
