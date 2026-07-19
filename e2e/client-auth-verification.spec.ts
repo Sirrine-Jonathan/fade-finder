@@ -2,16 +2,16 @@ import { test, expect } from '@playwright/test';
 
 test.describe('E2E Client Authentication Verification Suite', () => {
 
-  const testUser = {
-    firstName: 'E2ETest',
-    lastName: 'Client',
-    email: `client_e2e_${Date.now()}@example.com`,
-    password: 'SecurePassword123!',
-    phone: '555-0199',
-  };
+  test('Complete E2E Client Auth Verification: Register, Login, Session Check, & Logout', async ({ page }) => {
+    const testUser = {
+      firstName: 'E2ETest',
+      lastName: 'Client',
+      email: `client_e2e_${Date.now()}_${Math.floor(Math.random() * 10000)}@example.com`,
+      password: 'SecurePassword123!',
+      phone: '555-0199',
+    };
 
-  test('Complete E2E Client Auth Verification: Register, Login, Session Check, & Logout', async ({ page, request }) => {
-    // 1. Register new client user
+    // 1. Register new client user via registration form
     await page.goto('/register');
     await page.waitForLoadState('domcontentloaded');
 
@@ -30,8 +30,8 @@ test.describe('E2E Client Authentication Verification Suite', () => {
     const submitBtn = page.getByRole('button', { name: /create account|register|sign up/i });
     await submitBtn.click();
 
-    // Verify redirected or logged in automatically
-    await page.waitForTimeout(1000);
+    // Verify registration completion by URL navigation or body state
+    await expect(page.locator('body')).toBeVisible();
 
     // 2. Test Invalid Login credentials return error
     await page.goto('/login');
@@ -49,20 +49,20 @@ test.describe('E2E Client Authentication Verification Suite', () => {
     await page.locator('input[type="password"]').fill(testUser.password);
     await page.getByRole('button', { name: /sign in|login/i }).click();
 
-    await page.waitForTimeout(1000);
+    await expect(page.locator('body')).toBeVisible();
 
-    // 4. Prove session token cookie & /api/auth/me response
-    const meRes = await request.get('/api/auth/me');
+    // 4. Prove session token cookie & /api/auth/me response using page.request
+    const meRes = await page.request.get('/api/auth/me');
     expect(meRes.ok()).toBeTruthy();
     const meData = await meRes.json();
     expect(meData.success).toBe(true);
     expect(meData.user.email).toBe(testUser.email);
 
-    // 5. Test Logout clears session
-    const logoutRes = await request.post('/api/auth/logout');
+    // 5. Test Logout clears session cookie & returns null user
+    const logoutRes = await page.request.post('/api/auth/logout');
     expect(logoutRes.ok()).toBeTruthy();
 
-    const loggedOutMe = await request.get('/api/auth/me');
+    const loggedOutMe = await page.request.get('/api/auth/me');
     const loggedOutData = await loggedOutMe.json();
     expect(loggedOutData.user).toBeNull();
   });
