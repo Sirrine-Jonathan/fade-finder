@@ -16,22 +16,13 @@ For each of these todo items:
 
 ## Items
 
-- [ ] logged out home page is displaying more like the search page rather than a logged out landing page.
-- [ ] update prisma according to the build output:
-      ┌─────────────────────────────────────────────────────────┐
-      │ Update available 6.19.3 -> 7.8.0 │
-      │ │
-      │ This is a major update - please follow the guide at │
-      │ https://pris.ly/d/major-version-upgrade │
-      │ │
-      │ Run the following to update │
-      │ npm i --save-dev prisma@latest │
-      │ npm i @prisma/client@latest │
-      └─────────────────────────────────────────────────────────┘
-- [ ] specify node and npm according to the build output:
-      engines.node (package.json): unspecified
-      engines.npm (package.json): unspecified (use default)
-- [ ] add morgan or some server side logging for better telemetry
-- [ ] remove emojis. They are unprofessional.
-- [ ] remove admin links from footer as admin will know to use '/admin' to get to the admin portion of the site which will be protected with admin authentication.
-- [ ] double check client auth. prove it is working with e2e tests.
+All items from `TODO.md` have been converted to GitHub repository issues:
+
+- [x] logged out home page is displaying more like the search page rather than a logged out landing page. (#19)
+- [x] update prisma according to the build output (#20)
+- [x] specify node and npm according to the build output (#21)
+- [x] add morgan or some server side logging for better telemetry (#22)
+- [x] remove emojis. They are unprofessional. (#23)
+- [x] remove admin links from footer as admin will know to use '/admin' to get to the admin portion of the site which will be protected with admin authentication. (#24)
+- [x] double check client auth. prove it is working with e2e tests. (#25)
+
