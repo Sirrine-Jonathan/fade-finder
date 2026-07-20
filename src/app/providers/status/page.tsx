@@ -422,7 +422,7 @@ export default function VerificationStatusPage() {
           >
             {status === 'APPROVED' && (
               <p style={{ margin: 0, color: '#10b981', fontWeight: 600 }}>
-                🎉 Congratulations! Your provider account is fully verified and live on Fade Finder.
+                 Congratulations! Your provider account is fully verified and live on Fade Finder.
               </p>
             )}
             {status === 'PENDING' && (
@@ -432,7 +432,7 @@ export default function VerificationStatusPage() {
             )}
             {status === 'REJECTED' && (
               <p style={{ margin: 0, color: '#ef4444', fontWeight: 600 }}>
-                ⚠️ Action Required: Additional DOPL license verification is required. Please contact support.
+                 Action Required: Additional DOPL license verification is required. Please contact support.
               </p>
             )}
           </div>

@@ -602,7 +602,7 @@ export default function ProviderDashboardPage() {
 
           <FeatureGrid>
             <FeatureCard>
-              <FeatureIcon>💈</FeatureIcon>
+              <FeatureIcon></FeatureIcon>
               <FeatureTitle>Dual Pricing Model</FeatureTitle>
               <FeatureText>
                 Charge different rates for in-studio cuts versus house-call mobile appointments to cover travel and setup time.
@@ -610,7 +610,7 @@ export default function ProviderDashboardPage() {
             </FeatureCard>
 
             <FeatureCard>
-              <FeatureIcon>⚡</FeatureIcon>
+              <FeatureIcon></FeatureIcon>
               <FeatureTitle>Auto-Confirm Bookings</FeatureTitle>
               <FeatureText>
                 Enable instant auto-confirmation for open time slots or manually approve client requests as they arrive.
@@ -618,7 +618,7 @@ export default function ProviderDashboardPage() {
             </FeatureCard>
 
             <FeatureCard>
-              <FeatureIcon>📊</FeatureIcon>
+              <FeatureIcon></FeatureIcon>
               <FeatureTitle>Search & Profile Analytics</FeatureTitle>
               <FeatureText>
                 Track profile views, filter appearances in client searches, and monitor how many clients favorite your profile.
@@ -626,7 +626,7 @@ export default function ProviderDashboardPage() {
             </FeatureCard>
 
             <FeatureCard>
-              <FeatureIcon>🛡️</FeatureIcon>
+              <FeatureIcon></FeatureIcon>
               <FeatureTitle>Verified Barber Badge</FeatureTitle>
               <FeatureText>
                 Gain client trust with verified license badges displayed prominently on your public profile.
@@ -716,31 +716,31 @@ export default function ProviderDashboardPage() {
         {/* Navigation Quick Links */}
         <NavLinksGrid>
           <NavCard href="/providers/profile/private">
-            <NavCardIcon>✏️</NavCardIcon>
+            <NavCardIcon></NavCardIcon>
             <NavCardTitle>Private Profile Manager</NavCardTitle>
             <NavCardDesc>Edit services, dual pricing, bio, gallery & working hours</NavCardDesc>
           </NavCard>
 
           <NavCard href="/providers/analytics">
-            <NavCardIcon>📈</NavCardIcon>
+            <NavCardIcon></NavCardIcon>
             <NavCardTitle>Analytics Overview</NavCardTitle>
             <NavCardDesc>View search appearance frequency and view trends</NavCardDesc>
           </NavCard>
 
           <NavCard href="/providers/status">
-            <NavCardIcon>🔍</NavCardIcon>
+            <NavCardIcon></NavCardIcon>
             <NavCardTitle>Verification Tracker</NavCardTitle>
             <NavCardDesc>Check admin approval step and expected timeframe</NavCardDesc>
           </NavCard>
 
           <NavCard href="/providers/settings">
-            <NavCardIcon>⚙️</NavCardIcon>
+            <NavCardIcon></NavCardIcon>
             <NavCardTitle>Provider Settings</NavCardTitle>
             <NavCardDesc>Account details, password, and notification preferences</NavCardDesc>
           </NavCard>
 
           <NavCard href="/providers/billing">
-            <NavCardIcon>💳</NavCardIcon>
+            <NavCardIcon></NavCardIcon>
             <NavCardTitle>Billing & Payouts</NavCardTitle>
             <NavCardDesc>Payout methods, deposit history, and booking fee info</NavCardDesc>
           </NavCard>

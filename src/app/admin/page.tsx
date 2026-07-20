@@ -229,8 +229,8 @@ export default function AdminPage() {
       if (data.success) {
         setToast({
           message: action === 'APPROVE'
-            ? `✅ Barber verified successfully`
-            : `❌ Verification rejected`,
+            ? ` Barber verified successfully`
+            : ` Verification rejected`,
           type: action === 'APPROVE' ? 'success' : 'error',
         });
         setPendingBarbers((prev) => prev.filter((b) => b.id !== barberProfileId));

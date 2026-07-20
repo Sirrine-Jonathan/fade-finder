@@ -216,10 +216,10 @@ export default function ProviderBillingPage() {
 
         {/* Direct Deposit Method */}
         <SectionCard>
-          <SectionTitle>🏦 Payout Method (Direct Deposit / POS)</SectionTitle>
+          <SectionTitle> Payout Method (Direct Deposit / POS)</SectionTitle>
           <PayoutMethodBox>
             <MethodDetails>
-              <BankIcon>🏦</BankIcon>
+              <BankIcon></BankIcon>
               <div>
                 <strong style={{ fontSize: '1rem', display: 'block' }}>First National Bank •••• 4821</strong>
                 <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>Direct Deposit (Checking) • Verified</span>
@@ -233,7 +233,7 @@ export default function ProviderBillingPage() {
 
         {/* Transaction History */}
         <SectionCard>
-          <SectionTitle>📄 Recent Payout Transactions</SectionTitle>
+          <SectionTitle> Recent Payout Transactions</SectionTitle>
           <TxList>
             {transactions.map((tx) => (
               <TxRow key={tx.id}>
