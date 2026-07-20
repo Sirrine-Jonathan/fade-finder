@@ -459,9 +459,9 @@ export default function SearchPage() {
         (pos) => {
           setUserCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
           setLocationName('Current GPS Location');
-          setToast('📍 Location updated');
+          setToast(' Location updated');
         },
-        () => setToast('⚠️ GPS permission denied')
+        () => setToast(' GPS permission denied')
       );
     }
   };
@@ -538,7 +538,7 @@ export default function SearchPage() {
                 <ServiceTypeButtons>
                   {(['ALL', 'HOUSE_CALL', 'STUDIO'] as const).map((t) => (
                     <TypeBtn key={t} active={serviceType === t} onClick={() => setServiceType(t)}>
-                      {t === 'ALL' ? 'All' : t === 'HOUSE_CALL' ? '🚗 House Call' : '💈 Studio'}
+                      {t === 'ALL' ? 'All' : t === 'HOUSE_CALL' ? ' House Call' : ' Studio'}
                     </TypeBtn>
                   ))}
                 </ServiceTypeButtons>
@@ -651,7 +651,7 @@ export default function SearchPage() {
 
                     {barber.services[0] && (
                       <ServicePriceRow style={{ margin: '0.5rem 0' }}>
-                        <ServicePrice>💈 ${barber.services[0].studioPrice}</ServicePrice>
+                        <ServicePrice> ${barber.services[0].studioPrice}</ServicePrice>
                       </ServicePriceRow>
                     )}
 

@@ -34,4 +34,4 @@ For each of these todo items:
 - [x] add morgan or some server side logging for better telemetry
 - [x] remove emojis. They are unprofessional.
 - [x] remove admin links from footer as admin will know to use '/admin' to get to the admin portion of the site which will be protected with admin authentication.
-- [ ] double check client auth. prove it is working with e2e tests.
+- [x] double check client auth. prove it is working with e2e tests.

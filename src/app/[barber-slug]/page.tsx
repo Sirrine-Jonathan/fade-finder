@@ -315,7 +315,7 @@ export default function BarberProfilePage() {
     } else {
       localStorage.setItem('fade-favorites', JSON.stringify([...saved, slug]));
       setIsFavorited(true);
-      setToast('Added to favorites ⭐');
+      setToast('Added to favorites ');
     }
   };
 
@@ -435,8 +435,8 @@ export default function BarberProfilePage() {
                   <ServiceName>{s.name}</ServiceName>
                   <ServiceDesc>{s.description} · {s.durationMinutes} min</ServiceDesc>
                   <PriceRow>
-                    <Price type="studio">💈 Studio ${s.studioPrice}</Price>
-                    <Price type="housecall">🚗 House Call ${s.houseCallPrice}</Price>
+                    <Price type="studio"> Studio ${s.studioPrice}</Price>
+                    <Price type="housecall"> House Call ${s.houseCallPrice}</Price>
                   </PriceRow>
                 </ServiceCard>
               ))}

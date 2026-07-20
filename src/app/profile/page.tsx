@@ -321,7 +321,7 @@ export default function ProfilePage() {
                   <ApptService>{appt.service.name}</ApptService>
                   <ApptMeta>
                     with {appt.barber.user.firstName} {appt.barber.user.lastName} ·{' '}
-                    {appt.locationType === 'HOUSE_CALL' ? '🚗 House Call' : '💈 Studio'} ·{' '}
+                    {appt.locationType === 'HOUSE_CALL' ? ' House Call' : ' Studio'} ·{' '}
                     {new Date(appt.startTime).toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' })}
                   </ApptMeta>
                 </ApptLeft>
