@@ -28,7 +28,7 @@ For each of these todo items:
       │ npm i --save-dev prisma@latest │
       │ npm i @prisma/client@latest │
       └─────────────────────────────────────────────────────────┘
-- [ ] specify node and npm according to the build output:
+- [x] specify node and npm according to the build output:
       engines.node (package.json): unspecified
       engines.npm (package.json): unspecified (use default)
 - [ ] add morgan or some server side logging for better telemetry
