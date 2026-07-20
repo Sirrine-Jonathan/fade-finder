@@ -25,4 +25,3 @@ All items from `TODO.md` have been converted to GitHub repository issues:
 - [x] remove emojis. They are unprofessional. (#23)
 - [x] remove admin links from footer as admin will know to use '/admin' to get to the admin portion of the site which will be protected with admin authentication. (#24)
 - [x] double check client auth. prove it is working with e2e tests. (#25)
-

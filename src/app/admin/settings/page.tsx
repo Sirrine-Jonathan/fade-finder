@@ -165,7 +165,7 @@ export default function AdminSettingsPage() {
       const res = await fetch('/api/admin/reset-db', { method: 'POST' });
       const data = await res.json();
       if (data.success) {
-        setToast({ message: '✅ Database reset and reseeded successfully', type: 'success' });
+        setToast({ message: ' Database reset and reseeded successfully', type: 'success' });
         setResetModal(false);
       } else {
         setToast({ message: data.error || 'Reset failed', type: 'error' });
@@ -329,7 +329,7 @@ export default function AdminSettingsPage() {
       <Modal
         isOpen={resetModal}
         onClose={() => setResetModal(false)}
-        title="⚠️ Confirm Database Reset"
+        title=" Confirm Database Reset"
       >
         <div style={{ padding: '0.5rem 0' }}>
           <p style={{ color: '#94a3b8', fontSize: '0.92rem', lineHeight: 1.6, marginBottom: '1rem' }}>

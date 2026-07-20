@@ -389,7 +389,7 @@ export default function PrivateProfileManagerPage() {
         <form onSubmit={handleSave}>
           {/* General Information */}
           <SectionCard>
-            <SectionTitle>📌 General Details & Bio</SectionTitle>
+            <SectionTitle> General Details & Bio</SectionTitle>
             <FormRow>
               <Input
                 label="Provider Display Title"
@@ -440,7 +440,7 @@ export default function PrivateProfileManagerPage() {
 
           {/* Services & Dual Pricing */}
           <SectionCard>
-            <SectionTitle>✂️ Services & Dual Pricing (Studio vs House Call)</SectionTitle>
+            <SectionTitle> Services & Dual Pricing (Studio vs House Call)</SectionTitle>
             <p style={{ fontSize: '0.88rem', color: '#94a3b8', marginBottom: '1.25rem' }}>
               Define pricing for in-shop studio visits versus mobile house calls to cover travel expenses.
             </p>
@@ -500,7 +500,7 @@ export default function PrivateProfileManagerPage() {
 
           {/* Working Hours Availability */}
           <SectionCard>
-            <SectionTitle>📅 Working Hours Availability</SectionTitle>
+            <SectionTitle> Working Hours Availability</SectionTitle>
             <HoursGrid>
               {DAYS.map((dayName, dayIdx) => {
                 const avail = availabilities.find((a) => a.dayOfWeek === dayIdx);
@@ -525,7 +525,7 @@ export default function PrivateProfileManagerPage() {
 
           {/* Portfolio & Gallery */}
           <SectionCard>
-            <SectionTitle>📷 Portfolio & Gallery Images</SectionTitle>
+            <SectionTitle> Portfolio & Gallery Images</SectionTitle>
             <GalleryGrid>
               {portfolioImages.map((img, idx) => (
                 <GalleryCard key={idx}>
@@ -556,7 +556,7 @@ export default function PrivateProfileManagerPage() {
 
           {/* Highlighted Reviews */}
           <SectionCard>
-            <SectionTitle>⭐ Highlighted Client Reviews</SectionTitle>
+            <SectionTitle> Highlighted Client Reviews</SectionTitle>
             <ReviewsList>
               <ReviewCard>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
