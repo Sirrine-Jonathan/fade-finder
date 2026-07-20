@@ -335,21 +335,6 @@ export default function FadeFinderApp() {
                   badgeText="Mobile House Calls & Studio Cuts"
                 >
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', width: '100%' }}>
-                    {/* SEARCH INPUT BAR PREVIEW */}
-                    <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                      <div style={{ flex: 1, minWidth: '240px' }}>
-                        <Input
-                          placeholder="Search barber, service (Fade, Beard), address..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          icon={<Search size={18} />}
-                        />
-                      </div>
-                      <Button type="submit" variant="primary" size="md">
-                        Find Barbers
-                      </Button>
-                    </form>
-
                     {/* CALL TO ACTION BUTTONS */}
                     <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', paddingTop: '0.5rem' }}>
                       <Link href="/register">
