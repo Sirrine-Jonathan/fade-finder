@@ -16,8 +16,8 @@ For each of these todo items:
 
 ## Items
 
-- [ ] logged out home page is displaying more like the search page rather than a logged out landing page.
-- [ ] update prisma according to the build output:
+- [x] logged out home page is displaying more like the search page rather than a logged out landing page.
+- [x] update prisma according to the build output:
       ┌─────────────────────────────────────────────────────────┐
       │ Update available 6.19.3 -> 7.8.0 │
       │ │
@@ -31,7 +31,7 @@ For each of these todo items:
 - [x] specify node and npm according to the build output:
       engines.node (package.json): unspecified
       engines.npm (package.json): unspecified (use default)
-- [ ] add morgan or some server side logging for better telemetry
-- [ ] remove emojis. They are unprofessional.
+- [x] add morgan or some server side logging for better telemetry
+- [x] remove emojis. They are unprofessional.
 - [ ] remove admin links from footer as admin will know to use '/admin' to get to the admin portion of the site which will be protected with admin authentication.
 - [ ] double check client auth. prove it is working with e2e tests.
