@@ -186,7 +186,7 @@ export default function ProviderRegisterPage() {
           </AuthHeader>
 
           <NoticeBox>
-            📋 <strong>Verification Notice:</strong> Account submission creates a provider profile with{' '}
+             <strong>Verification Notice:</strong> Account submission creates a provider profile with{' '}
             <code>verificationStatus: PENDING</code>. An administrator will review your license details within 24–48 hours.
           </NoticeBox>
 
@@ -272,7 +272,7 @@ export default function ProviderRegisterPage() {
                 ℹ️ Verification Requirements
               </a>
               <a href="/providers/status#help" onClick={(e) => e.preventDefault()}>
-                ❓ Help & FAQs
+                 Help & FAQs
               </a>
             </RequirementsLinks>
 

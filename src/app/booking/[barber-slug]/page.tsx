@@ -373,7 +373,7 @@ export default function BookingPage() {
                   onClick={() => setLocationType('STUDIO')}
                   id="location-studio"
                 >
-                  <OptionTitle>💈 In Studio</OptionTitle>
+                  <OptionTitle> In Studio</OptionTitle>
                   <OptionPrice>${selectedService?.studioPrice ?? '—'}</OptionPrice>
                   <OptionNote>Visit the barber&apos;s studio location</OptionNote>
                 </LocationOption>
@@ -385,7 +385,7 @@ export default function BookingPage() {
                     onClick={() => setLocationType('HOUSE_CALL')}
                     id="location-house-call"
                   >
-                    <OptionTitle>🚗 House Call</OptionTitle>
+                    <OptionTitle> House Call</OptionTitle>
                     <OptionPrice>${selectedService?.houseCallPrice ?? '—'}</OptionPrice>
                     <OptionNote>Barber travels to your location</OptionNote>
                   </LocationOption>
@@ -453,7 +453,7 @@ export default function BookingPage() {
                 </SummaryRow>
                 <SummaryRow>
                   <SummaryLabel>Location</SummaryLabel>
-                  <SummaryValue>{locationType === 'STUDIO' ? '💈 In Studio' : '🚗 House Call'}</SummaryValue>
+                  <SummaryValue>{locationType === 'STUDIO' ? ' In Studio' : ' House Call'}</SummaryValue>
                 </SummaryRow>
                 <TotalRow>
                   <span><DollarSign size={16} style={{ verticalAlign: 'middle' }} />Total</span>
