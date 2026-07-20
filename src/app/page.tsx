@@ -206,7 +206,7 @@ export default function FadeFinderApp() {
   useEffect(() => {
     fetchBarbers();
     fetchAppointments();
-  }, [serviceTypeFilter, minRatingFilter, maxRadiusFilter, userCoords]);
+  }, [serviceTypeFilter, minRatingFilter, maxRadiusFilter, userCoords, searchQuery]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -223,7 +223,7 @@ export default function FadeFinderApp() {
             lng: position.coords.longitude,
           });
           setLocationName('Current GPS Location');
-          triggerToast('📍 GPS Location Updated');
+          triggerToast(' GPS Location Updated');
         },
         () => {
           alert('GPS location permission denied or unavailable. Using default location.');
@@ -259,7 +259,7 @@ export default function FadeFinderApp() {
         setBookingSuccessMsg(
           `Booking ${data.data.status === 'CONFIRMED' ? 'Confirmed!' : 'Submitted!'} Total: $${data.data.totalPrice}`
         );
-        triggerToast('✅ New Appointment Booked Successfully!');
+        triggerToast(' New Appointment Booked Successfully!');
         setTimeout(() => {
           setSelectedBarber(null);
           setBookingSuccessMsg('');
@@ -381,7 +381,7 @@ export default function FadeFinderApp() {
                     </p>
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-                      <Card variant="glass" style={{ padding: '1.5rem', textAlignment: 'left' }}>
+                      <Card variant="glass" style={{ padding: '1.5rem', textAlign: 'left' }}>
                         <Car size={32} color="#2dd4bf" style={{ marginBottom: '1rem' }} />
                         <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem' }}>Mobile House Calls</h3>
                         <p style={{ color: '#cbd5e1', fontSize: '0.875rem', lineHeight: 1.5 }}>
@@ -680,8 +680,8 @@ export default function FadeFinderApp() {
                                   <div style={{ fontSize: '0.7rem', color: '#64748b' }}>{srv.durationMinutes} mins</div>
                                 </div>
                                 <div style={{ textAlign: 'right' }}>
-                                  <div style={{ color: '#2dd4bf', fontWeight: 600 }}>💈 Studio: ${srv.studioPrice}</div>
-                                  <div style={{ color: '#f59e0b', fontSize: '0.7rem', fontWeight: 600 }}>🚗 House Call: ${srv.houseCallPrice}</div>
+                                  <div style={{ color: '#2dd4bf', fontWeight: 600 }}> Studio: ${srv.studioPrice}</div>
+                                  <div style={{ color: '#f59e0b', fontSize: '0.7rem', fontWeight: 600 }}> House Call: ${srv.houseCallPrice}</div>
                                 </div>
                               </div>
                             ))}
@@ -739,7 +739,7 @@ export default function FadeFinderApp() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.65rem' }}>
                       <div>
                         <Badge variant={appt.locationType === 'HOUSE_CALL' ? 'warning' : 'info'} size="sm">
-                          {appt.locationType === 'HOUSE_CALL' ? '🚗 Mobile House Call' : '💈 In-Studio Cut'}
+                          {appt.locationType === 'HOUSE_CALL' ? ' Mobile House Call' : ' In-Studio Cut'}
                         </Badge>
                         <h4 style={{ fontSize: '1.05rem', fontWeight: 700, marginTop: '0.3rem' }}>{appt.service.name}</h4>
                       </div>
@@ -828,7 +828,7 @@ export default function FadeFinderApp() {
               />
               <div>
                 <h3 style={{ fontSize: '1.25rem', fontWeight: 700 }}>{viewingProfile.name}</h3>
-                <p style={{ fontSize: '0.8rem', color: '#94a3b8' }}>📍 {viewingProfile.baseAddress}</p>
+                <p style={{ fontSize: '0.8rem', color: '#94a3b8' }}> {viewingProfile.baseAddress}</p>
                 <p style={{ fontSize: '0.8rem', color: '#f59e0b', marginTop: '0.2rem', fontWeight: 600 }}>
                   DOPL License: {viewingProfile.licenseNumber}
                 </p>
@@ -846,8 +846,8 @@ export default function FadeFinderApp() {
                     <p style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{srv.description} ({srv.durationMinutes} mins)</p>
                   </div>
                   <div style={{ textAlign: 'right', fontSize: '0.8rem' }}>
-                    <div style={{ color: '#2dd4bf', fontWeight: 700 }}>💈 Studio ${srv.studioPrice}</div>
-                    <div style={{ color: '#f59e0b', fontWeight: 700 }}>🚗 House Call ${srv.houseCallPrice}</div>
+                    <div style={{ color: '#2dd4bf', fontWeight: 700 }}> Studio ${srv.studioPrice}</div>
+                    <div style={{ color: '#f59e0b', fontWeight: 700 }}> House Call ${srv.houseCallPrice}</div>
                   </div>
                 </div>
               ))}
@@ -861,7 +861,7 @@ export default function FadeFinderApp() {
                 <div key={rev.id} style={{ backgroundColor: '#0b1318', padding: '0.65rem', borderRadius: '8px', fontSize: '0.8rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', color: '#f59e0b', fontWeight: 700, marginBottom: '0.2rem' }}>
                     <span>{rev.reviewer.firstName} {rev.reviewer.lastName}</span>
-                    <span>{'★'.repeat(rev.rating)}</span>
+                    <RatingStars rating={rev.rating} size="sm" />
                   </div>
                   <p style={{ color: '#cbd5e1' }}>"{rev.comment}"</p>
                 </div>
@@ -909,7 +909,7 @@ export default function FadeFinderApp() {
                       size="sm"
                       onClick={() => setBookingLocationType('HOUSE_CALL')}
                     >
-                      🚗 House Call (${selectedService?.houseCallPrice})
+                       House Call (${selectedService?.houseCallPrice})
                     </Button>
                     <Button
                       type="button"
@@ -917,7 +917,7 @@ export default function FadeFinderApp() {
                       size="sm"
                       onClick={() => setBookingLocationType('STUDIO')}
                     >
-                      💈 Barber Studio (${selectedService?.studioPrice})
+                       Barber Studio (${selectedService?.studioPrice})
                     </Button>
                   </div>
                 </div>

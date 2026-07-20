@@ -309,7 +309,7 @@ export default function RegisterPage() {
           </Form>
 
           <FreeTag>
-            <span>✓ Free forever</span> — no credit card required
+            <span>Free forever</span> — no credit card required
           </FreeTag>
 
           <AuthFooterText>
