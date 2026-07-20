@@ -35,10 +35,10 @@ export async function POST(request: Request) {
         );
       }
 
-      if (user.mfaRecoveryKey && mfaRecoveryKey) {
-        if (user.mfaRecoveryKey !== mfaRecoveryKey.trim()) {
+      if (user.mfaRecoveryKey) {
+        if (!mfaRecoveryKey || user.mfaRecoveryKey !== mfaRecoveryKey.trim()) {
           return NextResponse.json(
-            { success: false, error: 'Invalid MFA recovery key' },
+            { success: false, error: 'Invalid or missing MFA recovery key' },
             { status: 400 }
           );
         }

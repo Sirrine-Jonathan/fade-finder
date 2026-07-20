@@ -129,7 +129,7 @@ export async function POST(request: Request) {
       },
     });
 
-    const token = createSessionToken({
+    const token = await createSessionToken({
       userId: newUser.id,
       email: newUser.email,
       role: newUser.role,

@@ -6,8 +6,13 @@ import { VerificationStatus } from '@prisma/client';
 export async function GET(request: Request) {
   try {
     const session = await getSessionUser(request);
-    // Optional role check - admin or session verification
-    if (session && session.role !== 'ADMIN') {
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+    if (session.role !== 'ADMIN') {
       return NextResponse.json(
         { success: false, error: 'Unauthorized: Admin access required' },
         { status: 403 }
@@ -64,7 +69,13 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const session = await getSessionUser(request);
-    if (session && session.role !== 'ADMIN') {
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+    if (session.role !== 'ADMIN') {
       return NextResponse.json(
         { success: false, error: 'Unauthorized: Admin access required' },
         { status: 403 }

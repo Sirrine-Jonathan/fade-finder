@@ -64,6 +64,13 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const session = await getSessionUser(request);
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const {
       clientId: bodyClientId,
@@ -84,14 +91,9 @@ export async function POST(request: Request) {
       );
     }
 
-    let clientToUseId = session?.userId || bodyClientId;
-    if (!clientToUseId) {
-      const firstClient = await prisma.user.findFirst({ where: { role: 'CLIENT' } });
-      if (firstClient) clientToUseId = firstClient.id;
-    }
-
-    if (!clientToUseId) {
-      return NextResponse.json({ success: false, error: 'Client identification required' }, { status: 400 });
+    let clientToUseId = session.userId;
+    if (session.role === 'ADMIN' && bodyClientId) {
+      clientToUseId = bodyClientId;
     }
 
     const service = await prisma.service.findUnique({ where: { id: serviceId } });
@@ -149,11 +151,38 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
+    const session = await getSessionUser(request);
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication required' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { appointmentId, status } = body;
 
     if (!appointmentId || !status) {
       return NextResponse.json({ success: false, error: 'Missing appointmentId or status' }, { status: 400 });
+    }
+
+    const appointment = await prisma.appointment.findUnique({
+      where: { id: appointmentId },
+    });
+
+    if (!appointment) {
+      return NextResponse.json({ success: false, error: 'Appointment not found' }, { status: 404 });
+    }
+
+    if (session.role === 'CLIENT' && appointment.clientId !== session.userId) {
+      return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
+    }
+
+    if (session.role === 'BARBER') {
+      const barber = await prisma.barberProfile.findUnique({ where: { userId: session.userId } });
+      if (!barber || appointment.barberId !== barber.id) {
+        return NextResponse.json({ success: false, error: 'Forbidden' }, { status: 403 });
+      }
     }
 
     const updated = await prisma.appointment.update({

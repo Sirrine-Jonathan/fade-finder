@@ -30,35 +30,35 @@ describe('Authentication & Session Helpers', () => {
   });
 
   describe('createSessionToken and verifySessionToken', () => {
-    it('should create a valid JWT-like session token and decode it', () => {
+    it('should create a valid JWT-like session token and decode it', async () => {
       const payload = {
         userId: 'usr-123-abc',
         email: 'test@fadefinder.com',
         role: 'CLIENT',
       };
 
-      const token = createSessionToken(payload);
+      const token = await createSessionToken(payload);
       expect(token).toBeDefined();
       expect(typeof token).toBe('string');
 
-      const verified = verifySessionToken(token);
+      const verified = await verifySessionToken(token);
       expect(verified).not.toBeNull();
       expect(verified?.userId).toBe('usr-123-abc');
       expect(verified?.email).toBe('test@fadefinder.com');
       expect(verified?.role).toBe('CLIENT');
     });
 
-    it('should return null for invalid or tampered tokens', () => {
+    it('should return null for invalid or tampered tokens', async () => {
       const payload = {
         userId: 'usr-456-def',
         email: 'barber@fadefinder.com',
         role: 'PROVIDER',
       };
 
-      const token = createSessionToken(payload);
+      const token = await createSessionToken(payload);
       const tamperedToken = token.slice(0, -5) + 'xxxxx';
 
-      const result = verifySessionToken(tamperedToken);
+      const result = await verifySessionToken(tamperedToken);
       expect(result).toBeNull();
     });
   });

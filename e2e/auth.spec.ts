@@ -2,161 +2,118 @@ import { test, expect } from '@playwright/test';
 
 test.describe('E2E Authentication Suite — Auth, Roles & Route Protection', () => {
 
-  test.describe('Client Authentication & Lifecycle Flows', () => {
-
-    test('Client Registration Flow (/register)', async ({ page }) => {
-      await page.goto('/register');
-      await page.waitForLoadState('domcontentloaded');
-      
-      // Verify client registration pitch and form presence (or fallback page heading/form)
-      const pageHeading = page.locator('h1, h2, form').first();
-      await expect(pageHeading).toBeVisible();
-
-      // If registration form is present, fill form fields
-      const emailInput = page.getByPlaceholder(/email/i).or(page.locator('input[type="email"]'));
-      const passwordInput = page.getByPlaceholder(/password/i).or(page.locator('input[type="password"]'));
-      
-      if (await emailInput.count() > 0) {
-        await emailInput.first().fill(`testclient_${Date.now()}@example.com`);
-      }
-      if (await passwordInput.count() > 0) {
-        await passwordInput.first().fill('Password123!');
-      }
-
-      // Check for submit button or register link
-      const registerBtn = page.getByRole('button', { name: /register|sign up|create account/i });
-      if (await registerBtn.count() > 0) {
-        await expect(registerBtn.first()).toBeEnabled();
-      }
-    });
-
-    test('Client Login & Logout Flow (/login)', async ({ page }) => {
+  test.describe('Client Authentication & Authenticated Route Persistence', () => {
+    test('Client Sign-In and Access Protected /history & /profile', async ({ page }) => {
       await page.goto('/login');
       await page.waitForLoadState('domcontentloaded');
 
-      const loginTitle = page.locator('h1, h2, form').first();
-      await expect(loginTitle).toBeVisible();
+      await page.locator('input[type="email"]').first().fill('alex.client@example.com');
+      await page.locator('input[type="password"]').first().fill('password123');
+      await page.locator('button[type="submit"]').first().click();
 
-      // Test forgot password link presence
-      const forgotPasswordLink = page.getByRole('link', { name: /forgot password/i }).or(page.getByText(/forgot password/i));
-      if (await forgotPasswordLink.count() > 0) {
-        await expect(forgotPasswordLink.first()).toBeVisible();
-      }
+      // Wait for login processing and initial redirect
+      await page.waitForTimeout(1500);
 
-      // Test link to registration
-      const registerLink = page.getByRole('link', { name: /register|sign up/i }).or(page.getByText(/register/i));
-      if (await registerLink.count() > 0) {
-        await expect(registerLink.first()).toBeVisible();
-      }
-
-      // Simulate client login credentials entry
-      const emailField = page.getByPlaceholder(/email/i).or(page.locator('input[name="email"], input[type="email"]'));
-      const passField = page.getByPlaceholder(/password/i).or(page.locator('input[name="password"], input[type="password"]'));
-
-      if (await emailField.count() > 0) {
-        await emailField.first().fill('client@example.com');
-      }
-      if (await passField.count() > 0) {
-        await passField.first().fill('ClientPass123!');
-      }
-    });
-
-    test('Client Account Settings & Delete Account Flow', async ({ page }) => {
-      await page.goto('/settings');
+      // Verify client can access protected /history route without being redirected to /login
+      await page.goto('/history');
       await page.waitForLoadState('domcontentloaded');
-      
-      // Verify settings page loads
-      const content = page.locator('body');
-      await expect(content).toBeVisible();
+      expect(page.url()).not.toContain('/login');
+      await expect(page.locator('h1, h2').first()).toBeVisible();
 
-      // Check for delete account trigger or confirmation dialog/button
-      const deleteBtn = page.getByRole('button', { name: /delete account|danger zone|remove profile/i }).or(page.getByText(/delete account/i));
-      if (await deleteBtn.count() > 0) {
-        await expect(deleteBtn.first()).toBeVisible();
-      }
+      // Verify client can access protected /profile route
+      await page.goto('/profile');
+      await page.waitForLoadState('domcontentloaded');
+      expect(page.url()).not.toContain('/login');
     });
   });
 
-  test.describe('Barber / Provider Authentication & Lifecycle Flows', () => {
-
-    test('Provider Registration Pitch & Form (/providers/register)', async ({ page }) => {
-      await page.goto('/providers/register');
-      await page.waitForLoadState('domcontentloaded');
-
-      const header = page.locator('h1, h2, form').first();
-      await expect(header).toBeVisible();
-
-      // Verify provider sign up elements
-      const nameInput = page.getByPlaceholder(/name/i).or(page.locator('input[name="name"]'));
-      if (await nameInput.count() > 0) {
-        await nameInput.first().fill('Barber Dave');
-      }
-    });
-
-    test('Provider Login & Route Access (/providers/login)', async ({ page }) => {
+  test.describe('Barber / Provider Authentication & Authenticated Route Persistence', () => {
+    test('Provider Sign-In and Access Protected Provider Routes', async ({ page }) => {
       await page.goto('/providers/login');
       await page.waitForLoadState('domcontentloaded');
 
-      const loginContainer = page.locator('body');
-      await expect(loginContainer).toBeVisible();
+      await page.locator('input[type="email"]').first().fill('marcus.fades@example.com');
+      await page.locator('input[type="password"]').first().fill('password123');
+      await page.locator('button[type="submit"]').first().click();
 
-      // Check link to provider registration
-      const regLink = page.getByRole('link', { name: /register|join as barber/i }).or(page.getByText(/register/i));
-      if (await regLink.count() > 0) {
-        await expect(regLink.first()).toBeVisible();
-      }
-    });
+      await page.waitForTimeout(1500);
 
-    test('Provider Logout & Account Deletion Controls', async ({ page }) => {
+      // Access protected provider private profile page
+      await page.goto('/providers/profile/private');
+      await page.waitForLoadState('domcontentloaded');
+      expect(page.url()).not.toContain('/providers/login');
+      await expect(page.locator('body')).toBeVisible();
+
+      // Access protected provider settings page
       await page.goto('/providers/settings');
       await page.waitForLoadState('domcontentloaded');
-
-      await expect(page.locator('body')).toBeVisible();
+      expect(page.url()).not.toContain('/providers/login');
     });
   });
 
   test.describe('Admin Authentication & Control Security', () => {
-
-    test('Admin Dashboard Login & Recovery Key (/admin)', async ({ page }) => {
-      await page.goto('/admin');
+    test('Admin Sign-In and Access Site Admin Settings', async ({ page }) => {
+      await page.goto('/login');
       await page.waitForLoadState('domcontentloaded');
 
-      const adminPage = page.locator('body');
-      await expect(adminPage).toBeVisible();
+      await page.locator('input[type="email"]').first().fill('admin@fadefinder.com');
+      await page.locator('input[type="password"]').first().fill('adminpassword123');
+      await page.locator('button[type="submit"]').first().click();
 
-      // Verify admin password/recovery key fields or login layout
-      const recoveryLink = page.getByText(/recovery key|mfa|reset password/i).or(page.getByRole('button', { name: /recovery/i }));
-      if (await recoveryLink.count() > 0) {
-        await expect(recoveryLink.first()).toBeVisible();
-      }
+      await page.waitForTimeout(1500);
+
+      // Access protected admin settings page
+      await page.goto('/admin/settings');
+      await page.waitForLoadState('domcontentloaded');
+      expect(page.url()).not.toContain('/login');
+      await expect(page.getByText(/Platform Settings|Danger Zone/i).first()).toBeVisible();
     });
   });
 
-  test.describe('Logged-Out Route Protection', () => {
-
+  test.describe('Logged-Out Route Protection & API Security Boundaries', () => {
     test('Redirect unauthenticated user accessing protected client profile (/profile)', async ({ page }) => {
       await page.goto('/profile');
-      await page.waitForLoadState('domcontentloaded');
-      
-      // Verify page loads or redirects to login
-      const currentUrl = page.url();
-      expect(currentUrl).toBeDefined();
+      await page.waitForURL(/\/login/);
+      expect(page.url()).toContain('/login');
     });
 
     test('Redirect unauthenticated provider accessing private profile (/providers/profile/private)', async ({ page }) => {
       await page.goto('/providers/profile/private');
-      await page.waitForLoadState('domcontentloaded');
-
-      const currentUrl = page.url();
-      expect(currentUrl).toBeDefined();
+      await page.waitForURL(/\/providers\/login/);
+      expect(page.url()).toContain('/providers/login');
     });
 
     test('Redirect unauthenticated admin accessing site admin settings (/admin/settings)', async ({ page }) => {
       await page.goto('/admin/settings');
-      await page.waitForLoadState('domcontentloaded');
+      await page.waitForURL(/\/login/);
+      expect(page.url()).toContain('/login');
+    });
 
-      const currentUrl = page.url();
-      expect(currentUrl).toBeDefined();
+    test('Reject unauthenticated API call to /api/admin/verifications', async ({ request }) => {
+      const response = await request.get('/api/admin/verifications');
+      expect(response.status()).toBe(401);
+      const body = await response.json();
+      expect(body.success).toBe(false);
+      expect(body.error).toMatch(/Authentication required/i);
+    });
+
+    test('Reject unauthenticated appointment status change via PATCH /api/appointments', async ({ request }) => {
+      const response = await request.patch('/api/appointments', {
+        data: { appointmentId: 'dummy-id', status: 'CANCELLED' },
+      });
+      expect(response.status()).toBe(401);
+      const body = await response.json();
+      expect(body.success).toBe(false);
+    });
+
+    test('Reject password reset without MFA recovery key for MFA enabled account', async ({ request }) => {
+      const response = await request.post('/api/auth/forgot-password', {
+        data: { email: 'admin@fadefinder.com', newPassword: 'HackedPassword123!' },
+      });
+      expect(response.status()).toBe(400);
+      const body = await response.json();
+      expect(body.success).toBe(false);
+      expect(body.error).toMatch(/MFA recovery key/i);
     });
   });
 

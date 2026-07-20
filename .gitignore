@@ -32,3 +32,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# test & database artifacts
+/playwright-report
+/test-results
+*.db
+
