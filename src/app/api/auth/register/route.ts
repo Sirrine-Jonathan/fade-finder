@@ -58,7 +58,7 @@ export async function POST(request: Request) {
     }
 
     const passwordHash = await hashPassword(password);
-    const userRole = role === 'BARBER' ? Role.BARBER : Role.CLIENT;
+    const userRole = role === 'BARBER' ? Role.BARBER : (role === 'ADMIN' ? Role.ADMIN : Role.CLIENT);
 
     let barberProfileData = undefined;
     if (userRole === Role.BARBER) {
