@@ -228,28 +228,28 @@ export default function ProviderAnalyticsPage() {
         {/* Key Metrics */}
         <KeyMetricsGrid>
           <MetricCard>
-            <MetricIcon>👁️</MetricIcon>
+            <MetricIcon></MetricIcon>
             <MetricLabel>Profile Page Views</MetricLabel>
             <MetricValue>{views}</MetricValue>
             <MetricSub>Total visits to your public profile</MetricSub>
           </MetricCard>
 
           <MetricCard>
-            <MetricIcon>🔍</MetricIcon>
+            <MetricIcon></MetricIcon>
             <MetricLabel>Search Appearances</MetricLabel>
             <MetricValue>{searchApps}</MetricValue>
             <MetricSub>Times listed in client search results</MetricSub>
           </MetricCard>
 
           <MetricCard>
-            <MetricIcon>❤️</MetricIcon>
+            <MetricIcon></MetricIcon>
             <MetricLabel>Client Favorites</MetricLabel>
             <MetricValue>{favorites}</MetricValue>
             <MetricSub>Clients who favorited your profile</MetricSub>
           </MetricCard>
 
           <MetricCard>
-            <MetricIcon>💰</MetricIcon>
+            <MetricIcon></MetricIcon>
             <MetricLabel>Completed Earnings</MetricLabel>
             <MetricValue>${earnings.toFixed(2)}</MetricValue>
             <MetricSub>Total revenue from confirmed appts</MetricSub>
@@ -258,7 +258,7 @@ export default function ProviderAnalyticsPage() {
 
         {/* Filter Appearances */}
         <SectionCard>
-          <SectionTitle>📊 Search Appearances by Client Filter</SectionTitle>
+          <SectionTitle> Search Appearances by Client Filter</SectionTitle>
           <p style={{ fontSize: '0.9rem', color: '#94a3b8', marginBottom: '1.5rem' }}>
             Frequency of your profile appearing when clients filter by specific preferences in the search map.
           </p>
@@ -266,7 +266,7 @@ export default function ProviderAnalyticsPage() {
           <BreakdownGrid>
             <FilterAppearanceCard>
               <FilterItem>
-                <FilterName>🏠 Mobile / House Call Filter</FilterName>
+                <FilterName> Mobile / House Call Filter</FilterName>
                 <FilterCount>{Math.round(searchApps * 0.45)} views</FilterCount>
               </FilterItem>
               <ProgressTrack>
@@ -274,7 +274,7 @@ export default function ProviderAnalyticsPage() {
               </ProgressTrack>
 
               <FilterItem style={{ marginTop: '1rem' }}>
-                <FilterName>💈 In-Studio Filter</FilterName>
+                <FilterName> In-Studio Filter</FilterName>
                 <FilterCount>{Math.round(searchApps * 0.38)} views</FilterCount>
               </FilterItem>
               <ProgressTrack>
@@ -282,7 +282,7 @@ export default function ProviderAnalyticsPage() {
               </ProgressTrack>
 
               <FilterItem style={{ marginTop: '1rem' }}>
-                <FilterName>⭐ 4.5+ Rating Filter</FilterName>
+                <FilterName> 4.5+ Rating Filter</FilterName>
                 <FilterCount>{Math.round(searchApps * 0.62)} views</FilterCount>
               </FilterItem>
               <ProgressTrack>
@@ -292,7 +292,7 @@ export default function ProviderAnalyticsPage() {
 
             <FilterAppearanceCard>
               <FilterItem>
-                <FilterName>📍 Within 10 Mile Radius</FilterName>
+                <FilterName> Within 10 Mile Radius</FilterName>
                 <FilterCount>{Math.round(searchApps * 0.55)} views</FilterCount>
               </FilterItem>
               <ProgressTrack>
@@ -300,7 +300,7 @@ export default function ProviderAnalyticsPage() {
               </ProgressTrack>
 
               <FilterItem style={{ marginTop: '1rem' }}>
-                <FilterName>💵 Low-to-High Price Sort</FilterName>
+                <FilterName> Low-to-High Price Sort</FilterName>
                 <FilterCount>{Math.round(searchApps * 0.28)} views</FilterCount>
               </FilterItem>
               <ProgressTrack>
@@ -308,7 +308,7 @@ export default function ProviderAnalyticsPage() {
               </ProgressTrack>
 
               <FilterItem style={{ marginTop: '1rem' }}>
-                <FilterName>❤️ Favorites Only Filter</FilterName>
+                <FilterName> Favorites Only Filter</FilterName>
                 <FilterCount>{favorites * 4} views</FilterCount>
               </FilterItem>
               <ProgressTrack>
@@ -320,7 +320,7 @@ export default function ProviderAnalyticsPage() {
 
         {/* Appointment Status Breakdown */}
         <SectionCard>
-          <SectionTitle>📅 Appointment Funnel & Ratings</SectionTitle>
+          <SectionTitle> Appointment Funnel & Ratings</SectionTitle>
           <BreakdownGrid>
             <FilterAppearanceCard>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>

@@ -168,7 +168,7 @@ export default function ProviderSettingsPage() {
         <form onSubmit={handleSaveSettings}>
           {/* Account Details */}
           <SectionCard>
-            <SectionTitle>👤 Account Information</SectionTitle>
+            <SectionTitle> Account Information</SectionTitle>
             <FormRow>
               <Input
                 label="Email Address"
@@ -187,7 +187,7 @@ export default function ProviderSettingsPage() {
 
           {/* Security & Password */}
           <SectionCard>
-            <SectionTitle>🔒 Security & Password</SectionTitle>
+            <SectionTitle> Security & Password</SectionTitle>
             <FormRow>
               <Input
                 label="Current Password"
@@ -208,7 +208,7 @@ export default function ProviderSettingsPage() {
 
           {/* Notifications & Booking Rules */}
           <SectionCard>
-            <SectionTitle>🔔 Notifications & Scheduling Rules</SectionTitle>
+            <SectionTitle> Notifications & Scheduling Rules</SectionTitle>
             <CheckboxOption>
               <input
                 type="checkbox"

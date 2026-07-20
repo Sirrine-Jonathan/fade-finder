@@ -1,8 +1,6 @@
-import morgan from 'morgan';
-
 /**
  * Server-side logging telemetry helper for API routes and middleware.
- * Uses morgan formatting for structured HTTP telemetry.
+ * Provides structured HTTP and application telemetry logging.
  */
 export const logger = {
   info: (message: string, meta?: Record<string, any>) => {
