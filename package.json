@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@playwright/test": "^1.50.1",
-    "@prisma/client": "^7.8.0",
+    "@prisma/client": "6.19.3",
     "lucide-react": "^0.475.0",
     "next": "^16.2.10",
     "react": "^19.2.4",
@@ -45,7 +45,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.10",
     "jsdom": "^26.0.0",
-    "prisma": "^7.8.0",
+    "prisma": "6.19.3",
     "typescript": "^5",
     "vitest": "^3.0.5"
   }

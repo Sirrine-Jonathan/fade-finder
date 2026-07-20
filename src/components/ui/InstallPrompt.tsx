@@ -17,7 +17,7 @@ export const InstallPrompt: React.FC = () => {
 
   useEffect(() => {
     // Check if already in standalone mode
-    if (window.matchMedia('(display-mode: standalone)').matches || (window.navigator as unknown as { standalone?: boolean }).standalone) {
+    if (window.matchMedia?.('(display-mode: standalone)')?.matches || (window.navigator as unknown as { standalone?: boolean }).standalone) {
       setIsStandalone(true);
       return;
     }
