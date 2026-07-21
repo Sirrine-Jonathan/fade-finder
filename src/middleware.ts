@@ -50,11 +50,12 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 4. Protection for Client UI routes (/profile, /history, /booking)
+  // 4. Protection for Client UI routes (/profile, /history, /booking, /search)
   if (
     pathname.startsWith('/profile') ||
     pathname.startsWith('/history') ||
-    pathname.startsWith('/booking')
+    pathname.startsWith('/booking') ||
+    pathname.startsWith('/search')
   ) {
     if (!session) {
       const loginUrl = new URL('/login', request.url);
@@ -81,5 +82,6 @@ export const config = {
     '/profile/:path*',
     '/history/:path*',
     '/booking/:path*',
+    '/search/:path*',
   ],
 };

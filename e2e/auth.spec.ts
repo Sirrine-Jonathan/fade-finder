@@ -148,6 +148,12 @@ test.describe('E2E Suite 1 — Authentication, Security & Role Boundaries', () =
       expect(page.url()).toContain('/login');
     });
 
+    test('1.8b Redirect unauthenticated user from /search to /login', async ({ page }) => {
+      await page.goto('/search');
+      await page.waitForURL(/\/login/);
+      expect(page.url()).toContain('/login');
+    });
+
     test('1.9 Reject unauthenticated API request to /api/admin/verifications with 401', async ({ request }) => {
       const res = await request.get('/api/admin/verifications');
       expect(res.status()).toBe(401);
