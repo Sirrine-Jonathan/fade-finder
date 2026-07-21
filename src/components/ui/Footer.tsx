@@ -95,14 +95,14 @@ export const Footer: React.FC = () => {
             <BrandTitle>Fade Finder</BrandTitle>
           </LogoRow>
           <p style={{ lineHeight: 1.4 }}>
-            Connecting clients with verified local barbers for house calls and studio haircuts on demand.
+            Connecting customers with verified local barbers for house calls and studio haircuts on demand.
           </p>
         </FooterBrand>
 
         <Column>
-          <ColumnTitle>For Clients</ColumnTitle>
+          <ColumnTitle>Customers</ColumnTitle>
           <FooterLink href="/search">Find Barbers</FooterLink>
-          <FooterLink href="/login">Client Login</FooterLink>
+          <FooterLink href="/login">Login</FooterLink>
           <FooterLink href="/register">Sign Up Free</FooterLink>
         </Column>
 
@@ -116,7 +116,7 @@ export const Footer: React.FC = () => {
         <Column>
           <ColumnTitle>Trust & Compliance</ColumnTitle>
           <FooterLink href="/providers">DOPL License Standards</FooterLink>
-          <FooterLink href="/register">Client Terms & Privacy</FooterLink>
+          <FooterLink href="/register">Terms & Privacy</FooterLink>
         </Column>
       </Container>
 
