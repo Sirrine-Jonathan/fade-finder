@@ -40,7 +40,7 @@ test.describe('E2E Suite 2 — Consumer Discovery, Landing & Search Engine Filte
       await page.locator('input[type="email"]').fill(clientEmail);
       await page.locator('input[type="password"]').fill(password);
       await page.locator('button[type="submit"]').first().click();
-      await page.waitForTimeout(1500);
+      await page.waitForURL(url => url.pathname === '/');
     });
 
     test('2.3 Search Page Initial Load & Filter Sidebar Renders', async ({ page }) => {

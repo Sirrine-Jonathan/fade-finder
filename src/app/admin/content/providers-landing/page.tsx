@@ -192,14 +192,14 @@ export default function AdminProvidersLandingPage() {
   const [heroBg, setHeroBg] = useState('linear-gradient(135deg, #0d9488 0%, #064e3b 100%)');
   const [heroCta, setHeroCta] = useState('Become a Provider');
 
-  const [ben1, setBen1] = useState('Steady Client Flow');
+  const [ben1, setBen1] = useState('Steady Customer Flow');
   const [ben1Desc, setBen1Desc] = useState('New bookings delivered directly to your dashboard');
   const [ben2, setBen2] = useState('Mobile or Studio');
   const [ben2Desc, setBen2Desc] = useState('Choose to offer house calls, studio cuts, or both');
   const [ben3, setBen3] = useState('Keep Your Earnings');
   const [ben3Desc, setBen3Desc] = useState('No commission cuts — you set your prices, you keep everything');
   const [ben4, setBen4] = useState('DOPL Verification Badge');
-  const [ben4Desc, setBen4Desc] = useState('Build trust with clients with a platform-verified license badge');
+  const [ben4Desc, setBen4Desc] = useState('Build trust with customers with a platform-verified license badge');
 
   const [pricingTitle, setPricingTitle] = useState('Simple, Transparent Pricing');
   const [pricingDesc, setPricingDesc] = useState('No monthly fees, no commission. Fade Finder is free for providers during the beta launch period.');

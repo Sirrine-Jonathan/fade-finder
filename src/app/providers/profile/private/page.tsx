@@ -556,7 +556,7 @@ export default function PrivateProfileManagerPage() {
 
           {/* Highlighted Reviews */}
           <SectionCard>
-            <SectionTitle> Highlighted Client Reviews</SectionTitle>
+            <SectionTitle> Highlighted Customer Reviews</SectionTitle>
             <ReviewsList>
               <ReviewCard>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>

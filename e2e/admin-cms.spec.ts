@@ -25,14 +25,16 @@ test.describe('E2E Suite 6 — Admin Control Panel, Verification Review & CMS Ma
     barberId = bBody.user?.barberProfile?.id || '';
   });
 
-  test('6.1 Admin Dashboard & Overview Statistics (/admin)', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     await page.goto('/login');
     await page.waitForLoadState('domcontentloaded');
     await page.locator('input[type="email"]').fill(adminEmail);
     await page.locator('input[type="password"]').fill(password);
     await page.locator('button[type="submit"]').first().click();
-    await page.waitForTimeout(1500);
+    await page.waitForURL(url => url.pathname === '/');
+  });
 
+  test('6.1 Admin Dashboard & Overview Statistics (/admin)', async ({ page }) => {
     await page.goto('/admin');
     await page.waitForLoadState('domcontentloaded');
     expect(page.url()).not.toContain('/login');
@@ -40,13 +42,6 @@ test.describe('E2E Suite 6 — Admin Control Panel, Verification Review & CMS Ma
   });
 
   test('6.2 Admin Fetch Verifications API (/api/admin/verifications)', async ({ page }) => {
-    await page.goto('/login');
-    await page.waitForLoadState('domcontentloaded');
-    await page.locator('input[type="email"]').fill(adminEmail);
-    await page.locator('input[type="password"]').fill(password);
-    await page.locator('button[type="submit"]').first().click();
-    await page.waitForTimeout(1500);
-
     const res = await page.request.get('/api/admin/verifications');
     expect(res.status()).toBe(200);
     const body = await res.json();
@@ -57,13 +52,6 @@ test.describe('E2E Suite 6 — Admin Control Panel, Verification Review & CMS Ma
   test('6.3 Admin Approve Provider Verification Request', async ({ page }) => {
     if (!barberId) return;
 
-    await page.goto('/login');
-    await page.waitForLoadState('domcontentloaded');
-    await page.locator('input[type="email"]').fill(adminEmail);
-    await page.locator('input[type="password"]').fill(password);
-    await page.locator('button[type="submit"]').first().click();
-    await page.waitForTimeout(1500);
-
     const res = await page.request.post('/api/admin/verifications', {
       data: { barberProfileId: barberId, action: 'APPROVE', notes: 'DOPL License Verified by E2E Test' },
     });
@@ -73,13 +61,6 @@ test.describe('E2E Suite 6 — Admin Control Panel, Verification Review & CMS Ma
   });
 
   test('6.4 CMS Content Dashboard Overview (/admin/content)', async ({ page }) => {
-    await page.goto('/login');
-    await page.waitForLoadState('domcontentloaded');
-    await page.locator('input[type="email"]').fill(adminEmail);
-    await page.locator('input[type="password"]').fill(password);
-    await page.locator('button[type="submit"]').first().click();
-    await page.waitForTimeout(1500);
-
     await page.goto('/admin/content');
     await page.waitForLoadState('domcontentloaded');
     expect(page.url()).not.toContain('/login');
@@ -87,13 +68,6 @@ test.describe('E2E Suite 6 — Admin Control Panel, Verification Review & CMS Ma
   });
 
   test('6.5 Manage User Landing Page Content (/admin/content/landing)', async ({ page }) => {
-    await page.goto('/login');
-    await page.waitForLoadState('domcontentloaded');
-    await page.locator('input[type="email"]').fill(adminEmail);
-    await page.locator('input[type="password"]').fill(password);
-    await page.locator('button[type="submit"]').first().click();
-    await page.waitForTimeout(1500);
-
     await page.goto('/admin/content/landing');
     await page.waitForLoadState('domcontentloaded');
     expect(page.url()).not.toContain('/login');
@@ -101,13 +75,6 @@ test.describe('E2E Suite 6 — Admin Control Panel, Verification Review & CMS Ma
   });
 
   test('6.6 Manage Provider Landing Page Content (/admin/content/providers-landing)', async ({ page }) => {
-    await page.goto('/login');
-    await page.waitForLoadState('domcontentloaded');
-    await page.locator('input[type="email"]').fill(adminEmail);
-    await page.locator('input[type="password"]').fill(password);
-    await page.locator('button[type="submit"]').first().click();
-    await page.waitForTimeout(1500);
-
     await page.goto('/admin/content/providers-landing');
     await page.waitForLoadState('domcontentloaded');
     expect(page.url()).not.toContain('/login');
@@ -115,13 +82,6 @@ test.describe('E2E Suite 6 — Admin Control Panel, Verification Review & CMS Ma
   });
 
   test('6.7 Admin Settings & Danger Zone (/admin/settings)', async ({ page }) => {
-    await page.goto('/login');
-    await page.waitForLoadState('domcontentloaded');
-    await page.locator('input[type="email"]').fill(adminEmail);
-    await page.locator('input[type="password"]').fill(password);
-    await page.locator('button[type="submit"]').first().click();
-    await page.waitForTimeout(1500);
-
     await page.goto('/admin/settings');
     await page.waitForLoadState('domcontentloaded');
     expect(page.url()).not.toContain('/login');

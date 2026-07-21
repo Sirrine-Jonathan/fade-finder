@@ -258,7 +258,7 @@ export default function AdminSettingsPage() {
           <ToggleRow>
             <ToggleLabel>
               <ToggleTitle>Allow New Registrations</ToggleTitle>
-              <ToggleDesc>New barber and client accounts can be created</ToggleDesc>
+              <ToggleDesc>New barber and customer accounts can be created</ToggleDesc>
             </ToggleLabel>
             <Toggle on={newRegistrations} onClick={() => setNewRegistrations(!newRegistrations)} id="toggle-registrations" />
           </ToggleRow>

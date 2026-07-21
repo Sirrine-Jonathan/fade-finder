@@ -362,7 +362,7 @@ export default function FadeFinderApp() {
                       Why Book With Fade Finder?
                     </h2>
                     <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.95rem', marginBottom: '2rem' }}>
-                      The premier platform connecting clients with licensed mobile and studio barbers.
+                      The premier platform connecting customers with licensed mobile and studio barbers.
                     </p>
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
@@ -378,7 +378,7 @@ export default function FadeFinderApp() {
                         <Award size={32} color="#f59e0b" style={{ marginBottom: '1rem' }} />
                         <h3 style={{ fontSize: '1.15rem', fontWeight: 700, marginBottom: '0.5rem' }}>DOPL Vetted & Verified</h3>
                         <p style={{ color: '#cbd5e1', fontSize: '0.875rem', lineHeight: 1.5 }}>
-                          Every provider's Utah DOPL barber license and standing is verified before they take client appointments.
+                          Every provider's Utah DOPL barber license and standing is verified before they take appointments.
                         </p>
                       </Card>
 
@@ -706,7 +706,7 @@ export default function FadeFinderApp() {
           <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1.25rem' }}>
             <div style={{ marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 800 }}>Appointment Bookings</h2>
-              <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Client appointment history & upcoming bookings.</p>
+              <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Customer appointment history & upcoming bookings.</p>
             </div>
 
             {appointments.length === 0 ? (
@@ -738,7 +738,7 @@ export default function FadeFinderApp() {
                         <strong>Barber:</strong> {appt.barber.user.firstName} {appt.barber.user.lastName} ({appt.barber.user.phone})
                       </div>
                       <div>
-                        <strong>Client:</strong> {appt.client.firstName} {appt.client.lastName} ({appt.client.phone})
+                        <strong>Customer:</strong> {appt.client.firstName} {appt.client.lastName} ({appt.client.phone})
                       </div>
                       {appt.clientAddress && <div><strong>Location:</strong> {appt.clientAddress}</div>}
                       <div><strong>Scheduled:</strong> {new Date(appt.startTime).toLocaleString()}</div>
@@ -764,7 +764,7 @@ export default function FadeFinderApp() {
           <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem 1.25rem' }}>
             <div style={{ marginBottom: '1.5rem' }}>
               <h2 style={{ fontSize: '1.6rem', fontWeight: 800 }}>Barber Portal & Status Manager</h2>
-              <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Manage incoming client house-call requests and update booking statuses.</p>
+              <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Manage incoming customer house-call requests and update booking statuses.</p>
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.25rem' }}>
@@ -777,7 +777,7 @@ export default function FadeFinderApp() {
 
                   <h4 style={{ fontSize: '1.05rem', fontWeight: 700 }}>{appt.service.name} (${appt.totalPrice})</h4>
                   <p style={{ fontSize: '0.8rem', color: '#94a3b8', margin: '0.3rem 0 0.75rem 0' }}>
-                    Client: {appt.client.firstName} {appt.client.lastName} • <a href={`tel:${appt.client.phone}`} style={{ color: '#38bdf8' }}>{appt.client.phone}</a>
+                    Customer: {appt.client.firstName} {appt.client.lastName} • <a href={`tel:${appt.client.phone}`} style={{ color: '#38bdf8' }}>{appt.client.phone}</a>
                   </p>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.4rem', marginTop: '0.5rem' }}>

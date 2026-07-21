@@ -218,7 +218,7 @@ export default function ProviderAnalyticsPage() {
         <Header>
           <div>
             <Title>Provider Analytics</Title>
-            <Subtitle>Track page view frequency, search appearance under client filters, and favorite metrics</Subtitle>
+            <Subtitle>Track page view frequency, search appearance under customer filters, and favorite metrics</Subtitle>
           </div>
           <Button variant="outline" size="md" onClick={() => router.push('/providers')}>
             Return to Dashboard
@@ -238,14 +238,14 @@ export default function ProviderAnalyticsPage() {
             <MetricIcon></MetricIcon>
             <MetricLabel>Search Appearances</MetricLabel>
             <MetricValue>{searchApps}</MetricValue>
-            <MetricSub>Times listed in client search results</MetricSub>
+            <MetricSub>Times listed in customer search results</MetricSub>
           </MetricCard>
 
           <MetricCard>
             <MetricIcon></MetricIcon>
-            <MetricLabel>Client Favorites</MetricLabel>
+            <MetricLabel>Customer Favorites</MetricLabel>
             <MetricValue>{favorites}</MetricValue>
-            <MetricSub>Clients who favorited your profile</MetricSub>
+            <MetricSub>Customers who favorited your profile</MetricSub>
           </MetricCard>
 
           <MetricCard>
@@ -258,9 +258,9 @@ export default function ProviderAnalyticsPage() {
 
         {/* Filter Appearances */}
         <SectionCard>
-          <SectionTitle> Search Appearances by Client Filter</SectionTitle>
+          <SectionTitle> Search Appearances by Customer Filter</SectionTitle>
           <p style={{ fontSize: '0.9rem', color: '#94a3b8', marginBottom: '1.5rem' }}>
-            Frequency of your profile appearing when clients filter by specific preferences in the search map.
+            Frequency of your profile appearing when customers filter by specific preferences in the search map.
           </p>
 
           <BreakdownGrid>
@@ -324,7 +324,7 @@ export default function ProviderAnalyticsPage() {
           <BreakdownGrid>
             <FilterAppearanceCard>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <span>Average Client Rating</span>
+                <span>Average Customer Rating</span>
                 <RatingStars rating={analytics?.rating || 5.0} />
               </div>
               <p style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0, color: '#f8fafc' }}>

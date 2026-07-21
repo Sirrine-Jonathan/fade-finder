@@ -467,7 +467,7 @@ export default function HistoryPage() {
                       <MapPin size={16} />
                       <span>
                         {apt.locationType === 'HOUSE_CALL'
-                          ? `House Call: ${apt.clientAddress || 'Client Location'}`
+                          ? `House Call: ${apt.clientAddress || 'Your Location'}`
                           : `Studio: ${apt.barber.baseAddress}`}
                       </span>
                     </DetailItem>

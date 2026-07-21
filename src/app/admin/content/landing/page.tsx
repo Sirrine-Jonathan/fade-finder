@@ -220,7 +220,7 @@ export default function AdminContentLandingPage() {
   const [feat1Title, setFeat1Title] = useState('Browse Barbers');
   const [feat1Desc, setFeat1Desc] = useState('Filter by rating, distance, and service type');
   const [feat2Title, setFeat2Title] = useState('Top Rated');
-  const [feat2Desc, setFeat2Desc] = useState('Real reviews from verified clients');
+  const [feat2Desc, setFeat2Desc] = useState('Real reviews from verified customers');
   const [feat3Title, setFeat3Title] = useState('DOPL Verified');
   const [feat3Desc, setFeat3Desc] = useState('Only licensed professionals on the platform');
   const [feat4Title, setFeat4Title] = useState('House Calls');

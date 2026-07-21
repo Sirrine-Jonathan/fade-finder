@@ -181,7 +181,7 @@ export default function ProviderRegisterPage() {
           <AuthHeader>
             <Title>Become a Fade Finder Provider</Title>
             <Subtitle>
-              Register your account to receive studio and mobile house-call appointments from local clients.
+              Register your account to receive studio and mobile house-call appointments from local customers.
             </Subtitle>
           </AuthHeader>
 

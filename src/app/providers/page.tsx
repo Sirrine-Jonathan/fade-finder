@@ -552,7 +552,7 @@ export default function ProviderDashboardPage() {
               Grow Your Barber Business with <span>Fade Finder</span>
             </HeroTitle>
             <HeroSubtitle>
-              Connect with thousands of local clients, manage studio and house call bookings seamlessly, and control your schedule with automatic confirm & dual pricing.
+              Connect with thousands of local customers, manage studio and house call bookings seamlessly, and control your schedule with automatic confirm & dual pricing.
             </HeroSubtitle>
             <HeroButtonGroup>
               <Button variant="primary" size="lg" onClick={() => router.push('/providers/register')}>
@@ -566,7 +566,7 @@ export default function ProviderDashboardPage() {
 
           <SectionHeading>
             <SectionTitle>How Fade Finder Works for Barbers</SectionTitle>
-            <SectionSub>Simple steps to get verified and start booking clients today.</SectionSub>
+            <SectionSub>Simple steps to get verified and start booking customers today.</SectionSub>
           </SectionHeading>
 
           <ProcessGrid>
@@ -590,7 +590,7 @@ export default function ProviderDashboardPage() {
               <StepBadge>3</StepBadge>
               <StepTitle>Receive Bookings & Get Paid</StepTitle>
               <StepDesc>
-                Clients find you via map pins and search filters. Accept studio appointments or mobile home visits on your terms.
+                Customers find you via map pins and search filters. Accept studio appointments or mobile home visits on your terms.
               </StepDesc>
             </ProcessCard>
           </ProcessGrid>
@@ -613,7 +613,7 @@ export default function ProviderDashboardPage() {
               <FeatureIcon></FeatureIcon>
               <FeatureTitle>Auto-Confirm Bookings</FeatureTitle>
               <FeatureText>
-                Enable instant auto-confirmation for open time slots or manually approve client requests as they arrive.
+                Enable instant auto-confirmation for open time slots or manually approve customer requests as they arrive.
               </FeatureText>
             </FeatureCard>
 
@@ -621,7 +621,7 @@ export default function ProviderDashboardPage() {
               <FeatureIcon></FeatureIcon>
               <FeatureTitle>Search & Profile Analytics</FeatureTitle>
               <FeatureText>
-                Track profile views, filter appearances in client searches, and monitor how many clients favorite your profile.
+                Track profile views, filter appearances in customer searches, and monitor how many customers favorite your profile.
               </FeatureText>
             </FeatureCard>
 
@@ -629,7 +629,7 @@ export default function ProviderDashboardPage() {
               <FeatureIcon></FeatureIcon>
               <FeatureTitle>Verified Barber Badge</FeatureTitle>
               <FeatureText>
-                Gain client trust with verified license badges displayed prominently on your public profile.
+                Gain customer trust with verified license badges displayed prominently on your public profile.
               </FeatureText>
             </FeatureCard>
           </FeatureGrid>
@@ -827,7 +827,7 @@ export default function ProviderDashboardPage() {
           <FeedContent>
             <FeedTitle>Provider Community Feed</FeedTitle>
             <FeedDesc>
-              Share your latest haircuts, showcase portfolio photos, and post updates to connect directly with your client base.
+              Share your latest haircuts, showcase portfolio photos, and post updates to connect directly with your customer base.
             </FeedDesc>
           </FeedContent>
           <Button variant="secondary" size="md">

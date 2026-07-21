@@ -292,7 +292,7 @@ export default function AdminPage() {
               <Users size={20} color="#0d9488" />
             </div>
             <StatValue>{stats.totalClients || '—'}</StatValue>
-            <StatLabel>Total Clients</StatLabel>
+            <StatLabel>Total Customers</StatLabel>
           </StatCard>
           <StatCard variant="glass">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>

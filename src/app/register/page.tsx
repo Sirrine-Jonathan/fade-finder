@@ -211,7 +211,7 @@ export default function RegisterPage() {
             Find Your <span>Perfect Barber</span> Near You
           </PitchTitle>
           <PitchSub>
-            Join thousands of clients who use Fade Finder to book top-rated local barbers for in-studio
+            Join thousands of customers who use Fade Finder to book top-rated local barbers for in-studio
             cuts or convenient mobile house calls.
           </PitchSub>
 
@@ -222,7 +222,7 @@ export default function RegisterPage() {
             </BenefitItem>
             <BenefitItem>
               <Star size={18} />
-              Read genuine client reviews and ratings
+              Read genuine customer reviews and ratings
             </BenefitItem>
             <BenefitItem>
               <Calendar size={18} />
