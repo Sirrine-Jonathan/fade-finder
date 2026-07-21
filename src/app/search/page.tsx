@@ -387,7 +387,7 @@ export default function SearchPage() {
       try {
         const res = await fetch('/api/auth/me');
         const data = await res.json();
-        if (data.success && data.data) {
+        if (data.success && data.user) {
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
