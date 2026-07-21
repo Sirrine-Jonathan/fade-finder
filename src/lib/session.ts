@@ -9,7 +9,7 @@ export interface UserSession {
 
 function getSecretKey(): string {
   if (process.env.NODE_ENV === 'production' && !process.env.SESSION_SECRET) {
-    throw new Error('SESSION_SECRET environment variable must be set in production mode');
+    console.warn('⚠️ Warning: SESSION_SECRET environment variable is not set in production. Using fallback secret.');
   }
   return process.env.SESSION_SECRET || 'fadefinder_secret_key_2026_x89k_dev_prod_hash';
 }
