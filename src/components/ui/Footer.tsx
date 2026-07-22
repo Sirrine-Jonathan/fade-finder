@@ -100,7 +100,7 @@ export const Footer: React.FC = () => {
         </FooterBrand>
 
         <Column>
-          <ColumnTitle>Customers</ColumnTitle>
+          <ColumnTitle>Bookings</ColumnTitle>
           <FooterLink href="/search">Find Barbers</FooterLink>
           <FooterLink href="/login">Login</FooterLink>
           <FooterLink href="/register">Sign Up Free</FooterLink>
