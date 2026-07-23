@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSessionUser } from '@/lib/auth';
+import { geocodeAddress } from '@/lib/geocoding';
 
 export async function GET(request: Request) {
   try {
@@ -81,13 +82,24 @@ export async function PUT(request: Request) {
       );
     }
 
+    let finalLat = latitude !== undefined ? parseFloat(latitude) : undefined;
+    let finalLng = longitude !== undefined ? parseFloat(longitude) : undefined;
+
+    if (baseAddress !== undefined && (finalLat === undefined || finalLng === undefined)) {
+      const geoResult = await geocodeAddress(baseAddress);
+      if (geoResult.success) {
+        finalLat = geoResult.latitude;
+        finalLng = geoResult.longitude;
+      }
+    }
+
     const updatedProfile = await prisma.barberProfile.update({
       where: { userId: session.userId },
       data: {
         ...(bio !== undefined ? { bio } : {}),
         ...(baseAddress !== undefined ? { baseAddress } : {}),
-        ...(latitude !== undefined ? { latitude: parseFloat(latitude) } : {}),
-        ...(longitude !== undefined ? { longitude: parseFloat(longitude) } : {}),
+        ...(finalLat !== undefined ? { latitude: finalLat } : {}),
+        ...(finalLng !== undefined ? { longitude: finalLng } : {}),
         ...(maxTravelRadiusMiles !== undefined
           ? { maxTravelRadiusMiles: parseFloat(maxTravelRadiusMiles) }
           : {}),

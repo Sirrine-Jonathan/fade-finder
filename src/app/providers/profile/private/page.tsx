@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import { RatingStars } from '@/components/ui/RatingStars';
 import { Toast } from '@/components/ui/Toast';
+import { MapPreview } from '@/components/ui/MapPreview';
 
 interface ServiceItem {
   id?: string;
@@ -234,8 +235,28 @@ export default function PrivateProfileManagerPage() {
   const [title, setTitle] = useState('');
   const [bio, setBio] = useState('');
   const [baseAddress, setBaseAddress] = useState('');
+  const [latitude, setLatitude] = useState(40.7608);
+  const [longitude, setLongitude] = useState(-111.8910);
+  const [isGeocoding, setIsGeocoding] = useState(false);
   const [maxTravelRadiusMiles, setMaxTravelRadiusMiles] = useState('15');
   const [autoConfirmBookings, setAutoConfirmBookings] = useState(true);
+
+  const handleAddressBlur = async () => {
+    if (!baseAddress) return;
+    setIsGeocoding(true);
+    try {
+      const res = await fetch(`/api/geocode?address=${encodeURIComponent(baseAddress)}`);
+      const data = await res.json();
+      if (data.success) {
+        setLatitude(data.latitude);
+        setLongitude(data.longitude);
+      }
+    } catch (err) {
+      console.error('Error geocoding base address:', err);
+    } finally {
+      setIsGeocoding(false);
+    }
+  };
 
   const [services, setServices] = useState<ServiceItem[]>([
     { name: 'Standard Cut', description: 'Classic cut and styling', durationMinutes: 30, studioPrice: 35, houseCallPrice: 55 },
@@ -270,6 +291,8 @@ export default function PrivateProfileManagerPage() {
         setTitle(`${b.user.firstName} ${b.user.lastName}`);
         setBio(b.bio || '');
         setBaseAddress(b.baseAddress || '');
+        setLatitude(b.latitude || 40.7608);
+        setLongitude(b.longitude || -111.8910);
         setMaxTravelRadiusMiles(String(b.maxTravelRadiusMiles || 15));
         setAutoConfirmBookings(b.autoConfirmBookings !== false);
         if (b.services && b.services.length > 0) {
@@ -297,12 +320,14 @@ export default function PrivateProfileManagerPage() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          bio,
-          baseAddress,
-          maxTravelRadiusMiles: parseFloat(maxTravelRadiusMiles) || 15.0,
-          autoConfirmBookings,
-          services,
-          availabilities,
+           bio,
+           baseAddress,
+           latitude,
+           longitude,
+           maxTravelRadiusMiles: parseFloat(maxTravelRadiusMiles) || 15.0,
+           autoConfirmBookings,
+           services,
+           availabilities,
         }),
       });
 
@@ -401,9 +426,19 @@ export default function PrivateProfileManagerPage() {
                 label="Base Studio Address / Location"
                 value={baseAddress}
                 onChange={(e) => setBaseAddress(e.target.value)}
+                onBlur={handleAddressBlur}
                 placeholder="123 Main St, Salt Lake City, UT"
               />
             </FormRow>
+            {baseAddress && (
+              <div style={{ marginBottom: '1.25rem' }}>
+                <MapPreview
+                  latitude={latitude}
+                  longitude={longitude}
+                  label={isGeocoding ? "Locating..." : "Your Studio Location"}
+                />
+              </div>
+            )}
 
             <FormRow>
               <Input

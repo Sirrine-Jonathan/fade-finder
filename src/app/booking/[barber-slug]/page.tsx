@@ -12,6 +12,7 @@ import { Select } from '@/components/ui/Select';
 import { Badge } from '@/components/ui/Badge';
 import { Toast } from '@/components/ui/Toast';
 import { Modal } from '@/components/ui/Modal';
+import { MapPreview } from '@/components/ui/MapPreview';
 import {
   Calendar, CheckCircle2, Car, Home as HomeIcon,
   ChevronLeft, RefreshCw, Scissors, Clock, DollarSign,
@@ -34,6 +35,9 @@ interface BarberPublic {
   autoConfirmBookings: boolean;
   maxTravelRadiusMiles: number;
   services: Service[];
+  latitude: number;
+  longitude: number;
+  baseAddress: string;
 }
 
 const PageWrapper = styled.div`
@@ -210,6 +214,47 @@ export default function BookingPage() {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [successModal, setSuccessModal] = useState(false);
   const [confirmedStatus, setConfirmedStatus] = useState('');
+  const [clientLatitude, setClientLatitude] = useState<number | null>(null);
+  const [clientLongitude, setClientLongitude] = useState<number | null>(null);
+  const [isGeocoding, setIsGeocoding] = useState(false);
+  const [radiusWarning, setRadiusWarning] = useState<string | null>(null);
+
+  const handleAddressBlur = async () => {
+    if (!clientAddress || !barber) return;
+    setIsGeocoding(true);
+    setRadiusWarning(null);
+    try {
+      const res = await fetch(`/api/geocode?address=${encodeURIComponent(clientAddress)}`);
+      const data = await res.json();
+      if (data.success) {
+        setClientLatitude(data.latitude);
+        setClientLongitude(data.longitude);
+
+        // Haversine formula inline
+        const R = 3958.8; // Earth radius in miles
+        const dLat = (barber.latitude - data.latitude) * (Math.PI / 180);
+        const dLon = (barber.longitude - data.longitude) * (Math.PI / 180);
+        const a =
+          Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(data.latitude * (Math.PI / 180)) *
+            Math.cos(barber.latitude * (Math.PI / 180)) *
+            Math.sin(dLon / 2) *
+            Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = Math.round(R * c * 10) / 10;
+
+        if (distance > barber.maxTravelRadiusMiles) {
+          setRadiusWarning(
+            `This address is ${distance} miles away, which exceeds the barber's maximum travel radius of ${barber.maxTravelRadiusMiles} miles.`
+          );
+        }
+      }
+    } catch (err) {
+      console.error('Error geocoding client address:', err);
+    } finally {
+      setIsGeocoding(false);
+    }
+  };
 
   // Default date to tomorrow
   useEffect(() => {
@@ -235,9 +280,37 @@ export default function BookingPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!barber || !selectedService) return;
-    if (locationType === 'HOUSE_CALL' && !clientAddress) {
-      setToast({ message: 'Please enter your address for the house call', type: 'error' });
-      return;
+
+    let finalLat = clientLatitude;
+    let finalLng = clientLongitude;
+
+    if (locationType === 'HOUSE_CALL') {
+      if (!clientAddress) {
+        setToast({ message: 'Please enter your address for the house call', type: 'error' });
+        return;
+      }
+
+      if (finalLat === null || finalLng === null) {
+        setSubmitting(true);
+        try {
+          const res = await fetch(`/api/geocode?address=${encodeURIComponent(clientAddress)}`);
+          const data = await res.json();
+          if (data.success) {
+            finalLat = data.latitude;
+            finalLng = data.longitude;
+            setClientLatitude(finalLat);
+            setClientLongitude(finalLng);
+          } else {
+            setToast({ message: 'Could not verify the provided address location', type: 'error' });
+            setSubmitting(false);
+            return;
+          }
+        } catch {
+          setToast({ message: 'Error checking address location', type: 'error' });
+          setSubmitting(false);
+          return;
+        }
+      }
     }
 
     setSubmitting(true);
@@ -251,6 +324,8 @@ export default function BookingPage() {
           serviceId: selectedService.id,
           locationType,
           clientAddress: locationType === 'HOUSE_CALL' ? clientAddress : null,
+          clientLatitude: locationType === 'HOUSE_CALL' ? finalLat : null,
+          clientLongitude: locationType === 'HOUSE_CALL' ? finalLng : null,
           startTimeStr,
           notes,
         }),
@@ -393,14 +468,32 @@ export default function BookingPage() {
               </LocationToggle>
 
               {locationType === 'HOUSE_CALL' && (
-                <Input
-                  label="Your Address"
-                  placeholder="123 Main St, Salt Lake City, UT 84101"
-                  value={clientAddress}
-                  onChange={(e) => setClientAddress(e.target.value)}
-                  required
-                  id="client-address"
-                />
+                <>
+                  <Input
+                    label="Your Address"
+                    placeholder="123 Main St, Salt Lake City, UT 84101"
+                    value={clientAddress}
+                    onChange={(e) => setClientAddress(e.target.value)}
+                    onBlur={handleAddressBlur}
+                    required
+                    id="client-address"
+                  />
+                  {radiusWarning && (
+                    <div style={{ color: '#ef4444', fontSize: '0.8rem', fontWeight: 600, marginTop: '0.25rem' }}>
+                      ⚠️ {radiusWarning}
+                    </div>
+                  )}
+                  {clientAddress && clientLatitude !== null && clientLongitude !== null && (
+                    <div style={{ marginTop: '0.75rem' }}>
+                      <MapPreview
+                        latitude={clientLatitude}
+                        longitude={clientLongitude}
+                        label={isGeocoding ? "Checking Address..." : "Your Booking Location"}
+                        height="160px"
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </FormSection>
 

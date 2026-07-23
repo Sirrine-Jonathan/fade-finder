@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { Role, VerificationStatus } from '@prisma/client';
 import { hashPassword, createSessionToken, setSessionCookie } from '@/lib/auth';
+import { geocodeAddress } from '@/lib/geocoding';
 
 function slugify(text: string): string {
   return text
@@ -72,6 +73,17 @@ export async function POST(request: Request) {
         counter++;
       }
 
+      let finalLat = typeof latitude === 'number' ? latitude : parseFloat(latitude) || 40.7608;
+      let finalLng = typeof longitude === 'number' ? longitude : parseFloat(longitude) || -111.8910;
+
+      if (baseAddress) {
+        const geoResult = await geocodeAddress(baseAddress);
+        if (geoResult.success) {
+          finalLat = geoResult.latitude;
+          finalLng = geoResult.longitude;
+        }
+      }
+
       barberProfileData = {
         create: {
           slug,
@@ -80,8 +92,8 @@ export async function POST(request: Request) {
           isVerified: false,
           verificationStatus: VerificationStatus.PENDING,
           baseAddress: baseAddress || 'Salt Lake City, UT',
-          latitude: typeof latitude === 'number' ? latitude : parseFloat(latitude) || 40.7608,
-          longitude: typeof longitude === 'number' ? longitude : parseFloat(longitude) || -111.8910,
+          latitude: finalLat,
+          longitude: finalLng,
           maxTravelRadiusMiles: typeof maxTravelRadiusMiles === 'number' ? maxTravelRadiusMiles : parseFloat(maxTravelRadiusMiles) || 15.0,
           autoConfirmBookings: true,
           rating: 5.0,
