@@ -268,12 +268,12 @@ export default function ProviderRegisterPage() {
             />
 
             <RequirementsLinks>
-              <a href="/providers/status#requirements" onClick={(e) => e.preventDefault()}>
+              <Link href="/dopl-standards">
                 ℹ️ Verification Requirements
-              </a>
-              <a href="/providers/status#help" onClick={(e) => e.preventDefault()}>
+              </Link>
+              <Link href="/terms-privacy">
                  Help & FAQs
-              </a>
+              </Link>
             </RequirementsLinks>
 
             <Button type="submit" variant="primary" size="lg" disabled={loading} fullWidth>
