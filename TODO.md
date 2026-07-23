@@ -19,7 +19,7 @@ For each of these todo items:
 All items from `TODO.md` have been converted to GitHub repository issues:
 
 - [x] execute PLAN.md
-- [ ] Implement Geocoding & Map Search Integration (Google Maps / Mapbox API) for client and provider addresses
+- [x] Implement Geocoding & Map Search Integration (Google Maps / Mapbox API) for client and provider addresses
 - [ ] Integrate Stripe Payments for secure booking deposits and Barber Payout transfers
 - [ ] Build Multi-Factor Authentication (MFA) Setup UI supporting TOTP (Google Authenticator)
 - [ ] Implement Real-Time Notifications and Chat between Client and Barber (WebSockets / SSE)
