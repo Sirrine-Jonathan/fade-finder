@@ -3,6 +3,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
+import { useAuth } from '@/components/providers/AuthProvider';
 
 const FooterWrapper = styled.footer`
   background-color: ${({ theme }) => theme.colors.surface};
@@ -86,6 +87,8 @@ const BottomRow = styled.div`
 `;
 
 export const Footer: React.FC = () => {
+  const { user } = useAuth();
+
   return (
     <FooterWrapper>
       <Container>
@@ -100,10 +103,20 @@ export const Footer: React.FC = () => {
         </FooterBrand>
 
         <Column>
-          <ColumnTitle>Bookings</ColumnTitle>
-          <FooterLink href="/search">Find Barbers</FooterLink>
-          <FooterLink href="/login">Login</FooterLink>
-          <FooterLink href="/register">Sign Up Free</FooterLink>
+          {user ? (
+            <>
+              <ColumnTitle>Bookings</ColumnTitle>
+              <FooterLink href="/search">Find Barbers</FooterLink>
+              <FooterLink href="/history">My Appointments</FooterLink>
+              <FooterLink href="/profile">My Profile</FooterLink>
+            </>
+          ) : (
+            <>
+              <div style={{ height: '1.25rem' }} /> {/* Spacer to align with columns that have headers */}
+              <FooterLink href="/login">Login</FooterLink>
+              <FooterLink href="/register">Sign Up Free</FooterLink>
+            </>
+          )}
         </Column>
 
         <Column>
@@ -115,8 +128,8 @@ export const Footer: React.FC = () => {
 
         <Column>
           <ColumnTitle>Trust & Compliance</ColumnTitle>
-          <FooterLink href="/providers">DOPL License Standards</FooterLink>
-          <FooterLink href="/register">Terms & Privacy</FooterLink>
+          <FooterLink href="/dopl-standards">DOPL License Standards</FooterLink>
+          <FooterLink href="/terms-privacy">Terms & Privacy</FooterLink>
         </Column>
       </Container>
 

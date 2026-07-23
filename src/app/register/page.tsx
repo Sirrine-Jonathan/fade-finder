@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import styled from 'styled-components';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Navbar } from '@/components/ui/Navbar';
 import { Footer } from '@/components/ui/Footer';
 import { Button } from '@/components/ui/Button';
@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
 import { Toast } from '@/components/ui/Toast';
 import { UserPlus, CheckCircle2, Star, Shield, Calendar } from 'lucide-react';
+import { useAuth } from '@/components/providers/AuthProvider';
 
 const PageWrapper = styled.div`
   min-height: 100vh;
@@ -152,8 +153,13 @@ const AuthFooterText = styled.p`
   }
 `;
 
-export default function RegisterPage() {
+function RegisterContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const { refreshUser } = useAuth();
+  
+  const redirectTo = searchParams.get('redirect') || searchParams.get('next') || '/profile';
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -186,7 +192,8 @@ export default function RegisterPage() {
 
       if (data.success) {
         setToast({ message: 'Account created! Welcome to Fade Finder.', type: 'success' });
-        setTimeout(() => router.push('/'), 1200);
+        await refreshUser();
+        setTimeout(() => router.push(redirectTo), 1200);
       } else {
         setToast({ message: data.error || 'Registration failed', type: 'error' });
       }
@@ -325,5 +332,13 @@ export default function RegisterPage() {
       </Container>
       <Footer />
     </PageWrapper>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RegisterContent />
+    </Suspense>
   );
 }

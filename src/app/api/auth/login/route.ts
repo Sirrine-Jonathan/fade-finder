@@ -14,32 +14,74 @@ export async function POST(request: Request) {
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase().trim() },
-      include: {
-        barberProfile: {
-          include: {
-            services: true,
-            availabilities: true,
-            portfolioImages: true,
+    const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase().trim();
+    const adminPassword = process.env.ADMIN_PASSWORD;
+    const requestEmail = email.toLowerCase().trim();
+
+    let user = null;
+
+    if (adminEmail && requestEmail === adminEmail) {
+      if (!adminPassword || password !== adminPassword) {
+        return NextResponse.json(
+          { success: false, error: 'Invalid email or password' },
+          { status: 401 }
+        );
+      }
+
+      const adminHash = await hashPassword(adminPassword);
+      user = await prisma.user.upsert({
+        where: { email: requestEmail },
+        update: {
+          role: 'ADMIN',
+          passwordHash: adminHash,
+        },
+        create: {
+          email: requestEmail,
+          passwordHash: adminHash,
+          role: 'ADMIN',
+          phone: '555-0000',
+          firstName: 'Admin',
+          lastName: 'User',
+          avatarUrl: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=400&auto=format&fit=crop&q=80',
+        },
+        include: {
+          barberProfile: {
+            include: {
+              services: true,
+              availabilities: true,
+              portfolioImages: true,
+            },
           },
         },
-      },
-    });
+      });
+    } else {
+      user = await prisma.user.findUnique({
+        where: { email: requestEmail },
+        include: {
+          barberProfile: {
+            include: {
+              services: true,
+              availabilities: true,
+              portfolioImages: true,
+            },
+          },
+        },
+      });
 
-    if (!user) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid email or password' },
-        { status: 401 }
-      );
-    }
+      if (!user) {
+        return NextResponse.json(
+          { success: false, error: 'Invalid email or password' },
+          { status: 401 }
+        );
+      }
 
-    const isValidPassword = await verifyPassword(password, user.passwordHash);
-    if (!isValidPassword) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid email or password' },
-        { status: 401 }
-      );
+      const isValidPassword = await verifyPassword(password, user.passwordHash);
+      if (!isValidPassword) {
+        return NextResponse.json(
+          { success: false, error: 'Invalid email or password' },
+          { status: 401 }
+        );
+      }
     }
 
     const token = await createSessionToken({
