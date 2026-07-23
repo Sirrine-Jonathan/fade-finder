@@ -18,10 +18,12 @@ For each of these todo items:
 
 All items from `TODO.md` have been converted to GitHub repository issues:
 
-- [x] logged out home page is displaying more like the search page rather than a logged out landing page. (#19)
-- [x] update prisma according to the build output (#20)
-- [x] specify node and npm according to the build output (#21)
-- [x] add morgan or some server side logging for better telemetry (#22)
-- [x] remove emojis. They are unprofessional. (#23)
-- [x] remove admin links from footer as admin will know to use '/admin' to get to the admin portion of the site which will be protected with admin authentication. (#24)
-- [x] double check client auth. prove it is working with e2e tests. (#25)
+- [x] execute PLAN.md
+- [ ] Implement Geocoding & Map Search Integration (Google Maps / Mapbox API) for client and provider addresses
+- [ ] Integrate Stripe Payments for secure booking deposits and Barber Payout transfers
+- [ ] Build Multi-Factor Authentication (MFA) Setup UI supporting TOTP (Google Authenticator)
+- [ ] Implement Real-Time Notifications and Chat between Client and Barber (WebSockets / SSE)
+- [ ] Add Booking Calendar Conflict Resolution and Travel Time Buffer Calculations
+- [ ] Configure Sentry & Winston Structured Logging for telemetry and error tracking in production
+- [ ] Implement API Rate Limiting for Auth endpoints to prevent brute-force attacks
+- [ ] Migrate developer DB setup to Managed Production PostgreSQL using standard Prisma Migrations
