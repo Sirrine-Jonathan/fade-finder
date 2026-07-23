@@ -10,13 +10,13 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
-import { MapPin } from '@/components/ui/MapPin';
 import { RatingStars } from '@/components/ui/RatingStars';
 import { Toast } from '@/components/ui/Toast';
+import { MapView } from '@/components/ui/MapView';
 import {
   Search, SlidersHorizontal, Compass, Car, Home as HomeIcon,
   RefreshCw, Scissors, Grid3X3, List, Star, Bookmark, BookmarkCheck,
-  Award, Calendar, Eye, X, Lock, LogIn, UserPlus,
+  Award, Calendar, Eye, X, Lock, LogIn, UserPlus, MapPin,
 } from 'lucide-react';
 
 interface Service {
@@ -36,6 +36,8 @@ interface Barber {
   licenseNumber: string;
   isVerified: boolean;
   baseAddress: string;
+  latitude: number;
+  longitude: number;
   rating: number;
   reviewCount: number;
   distanceMiles: number | null;
@@ -379,7 +381,7 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(true);
   const [authLoading, setAuthLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [view, setView] = useState<'grid' | 'list'>('grid');
+  const [view, setView] = useState<'grid' | 'list' | 'map'>('grid');
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
@@ -403,6 +405,7 @@ export default function SearchPage() {
 
   // Filters
   const [searchQuery, setSearchQuery] = useState('');
+  const [locationInput, setLocationInput] = useState('Salt Lake City, UT');
   const [serviceType, setServiceType] = useState<'ALL' | 'HOUSE_CALL' | 'STUDIO'>('ALL');
   const [minRating, setMinRating] = useState(0);
   const [maxDistance, setMaxDistance] = useState(50);
@@ -410,13 +413,33 @@ export default function SearchPage() {
   const [savedIds, setSavedIds] = useState<string[]>([]);
   const [locationName, setLocationName] = useState('Salt Lake City, UT');
   const [userCoords, setUserCoords] = useState<{ lat: number; lng: number }>({ lat: 40.7608, lng: -111.891 });
+  const [centerCoords, setCenterCoords] = useState<{ lat: number; lng: number }>({ lat: 40.7608, lng: -111.891 });
   const [sortBy, setSortBy] = useState<'distance' | 'rating' | 'price'>('distance');
 
   const fetchBarbers = useCallback(async () => {
     if (!isAuthenticated) return;
     setLoading(true);
     try {
-      let url = `/api/barbers?type=${serviceType}&lat=${userCoords.lat}&lng=${userCoords.lng}`;
+      let coords = userCoords;
+      let finalLocationName = locationName;
+
+      if (locationInput && locationInput !== locationName) {
+        try {
+          const res = await fetch(`/api/geocode?address=${encodeURIComponent(locationInput)}`);
+          const data = await res.json();
+          if (data.success) {
+            coords = { lat: data.latitude, lng: data.longitude };
+            setUserCoords(coords);
+            setCenterCoords(coords);
+            finalLocationName = data.formattedAddress || locationInput;
+            setLocationName(finalLocationName);
+          }
+        } catch (err) {
+          console.error('Error geocoding location input:', err);
+        }
+      }
+
+      let url = `/api/barbers?type=${serviceType}&lat=${coords.lat}&lng=${coords.lng}`;
       if (searchQuery) url += `&query=${encodeURIComponent(searchQuery)}`;
 
       const res = await fetch(url);
@@ -445,7 +468,7 @@ export default function SearchPage() {
     } finally {
       setLoading(false);
     }
-  }, [isAuthenticated, serviceType, minRating, maxDistance, userCoords, searchQuery, sortBy]);
+  }, [isAuthenticated, serviceType, minRating, maxDistance, userCoords, searchQuery, sortBy, locationInput, locationName]);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -457,8 +480,11 @@ export default function SearchPage() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (pos) => {
-          setUserCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+          const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+          setUserCoords(coords);
+          setCenterCoords(coords);
           setLocationName('Current GPS Location');
+          setLocationInput('Current GPS Location');
           setToast(' Location updated');
         },
         () => setToast(' GPS permission denied')
@@ -515,7 +541,7 @@ export default function SearchPage() {
           <FilterBar>
             <FilterInner>
               <SearchRow>
-                <div style={{ flex: 1, minWidth: '240px' }}>
+                <div style={{ flex: 2, minWidth: '240px' }}>
                   <Input
                     placeholder="Search barber name, style, neighborhood..."
                     value={searchQuery}
@@ -524,11 +550,37 @@ export default function SearchPage() {
                     id="search-query"
                   />
                 </div>
+                <div style={{ flex: 1, minWidth: '180px' }}>
+                  <Input
+                    placeholder="Location (e.g. Salt Lake City)"
+                    value={locationInput}
+                    onChange={(e) => setLocationInput(e.target.value)}
+                    icon={<MapPin size={16} />}
+                    id="location-search"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        fetchBarbers();
+                      }
+                    }}
+                  />
+                </div>
                 <Button variant="primary" size="md" onClick={fetchBarbers} id="search-submit">
                   Search
                 </Button>
-                {searchQuery && (
-                  <Button variant="ghost" size="sm" icon={<X size={14} />} onClick={() => { setSearchQuery(''); fetchBarbers(); }}>
+                {(searchQuery || locationInput !== 'Salt Lake City, UT') && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    icon={<X size={14} />}
+                    onClick={() => {
+                      setSearchQuery('');
+                      setLocationInput('Salt Lake City, UT');
+                      setUserCoords({ lat: 40.7608, lng: -111.891 });
+                      setCenterCoords({ lat: 40.7608, lng: -111.891 });
+                      setLocationName('Salt Lake City, UT');
+                      setTimeout(fetchBarbers, 50);
+                    }}
+                  >
                     Clear
                   </Button>
                 )}
@@ -605,6 +657,9 @@ export default function SearchPage() {
                 <ToggleBtn active={view === 'list'} onClick={() => setView('list')} title="List view" id="view-list">
                   <List size={16} />
                 </ToggleBtn>
+                <ToggleBtn active={view === 'map'} onClick={() => setView('map')} title="Map view" id="view-map">
+                  <Compass size={16} />
+                </ToggleBtn>
               </ViewToggle>
             </ResultsHeader>
 
@@ -629,6 +684,14 @@ export default function SearchPage() {
                   Clear All Filters
                 </Button>
               </LoadingState>
+            ) : view === 'map' ? (
+              <MapView
+                barbers={displayedBarbers}
+                userCoords={userCoords}
+                centerCoords={centerCoords}
+                onCenterChange={setCenterCoords}
+                onLocateUser={handleGPS}
+              />
             ) : view === 'grid' ? (
               <GridView>
                 {displayedBarbers.map((barber) => (

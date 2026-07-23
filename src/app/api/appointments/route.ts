@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { LocationType, AppointmentStatus } from '@prisma/client';
 import { getSessionUser } from '@/lib/auth';
+import { geocodeAddress } from '@/lib/geocoding';
+import { calculateDistanceMiles } from '@/lib/geo';
 
 export async function GET(request: Request) {
   try {
@@ -114,6 +116,47 @@ export async function POST(request: Request) {
       ? AppointmentStatus.CONFIRMED
       : AppointmentStatus.PENDING;
 
+    let finalClientLat = clientLatitude ? parseFloat(clientLatitude) : null;
+    let finalClientLng = clientLongitude ? parseFloat(clientLongitude) : null;
+
+    if (locationType === 'HOUSE_CALL') {
+      if (!clientAddress) {
+        return NextResponse.json(
+          { success: false, error: 'Address is required for house call bookings' },
+          { status: 400 }
+        );
+      }
+
+      if (finalClientLat === null || finalClientLng === null) {
+        const geoResult = await geocodeAddress(clientAddress);
+        if (!geoResult.success) {
+          return NextResponse.json(
+            { success: false, error: 'Could not resolve the provided address' },
+            { status: 400 }
+          );
+        }
+        finalClientLat = geoResult.latitude;
+        finalClientLng = geoResult.longitude;
+      }
+
+      const distance = calculateDistanceMiles(
+        finalClientLat,
+        finalClientLng,
+        barber.latitude,
+        barber.longitude
+      );
+
+      if (distance > barber.maxTravelRadiusMiles) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Your address is ${distance} miles away, which exceeds the barber's maximum travel radius of ${barber.maxTravelRadiusMiles} miles.`
+          },
+          { status: 400 }
+        );
+      }
+    }
+
     const newAppointment = await prisma.appointment.create({
       data: {
         clientId: clientToUseId,
@@ -121,8 +164,8 @@ export async function POST(request: Request) {
         serviceId,
         locationType: locationType === 'HOUSE_CALL' ? LocationType.HOUSE_CALL : LocationType.STUDIO,
         clientAddress: clientAddress || null,
-        clientLatitude: clientLatitude ? parseFloat(clientLatitude) : null,
-        clientLongitude: clientLongitude ? parseFloat(clientLongitude) : null,
+        clientLatitude: finalClientLat,
+        clientLongitude: finalClientLng,
         startTime,
         endTime,
         status: initialStatus,

@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Toast } from '@/components/ui/Toast';
+import { MapPreview } from '@/components/ui/MapPreview';
 
 const PageWrapper = styled.div`
   min-height: 100vh;
@@ -123,10 +124,30 @@ export default function ProviderRegisterPage() {
   const [phone, setPhone] = useState('');
   const [licenseNumber, setLicenseNumber] = useState('');
   const [baseAddress, setBaseAddress] = useState('');
+  const [latitude, setLatitude] = useState(40.7608);
+  const [longitude, setLongitude] = useState(-111.8910);
+  const [isGeocoding, setIsGeocoding] = useState(false);
   const [bio, setBio] = useState('');
   const [maxTravelRadiusMiles, setMaxTravelRadiusMiles] = useState('15');
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
+  const handleAddressBlur = async () => {
+    if (!baseAddress) return;
+    setIsGeocoding(true);
+    try {
+      const res = await fetch(`/api/geocode?address=${encodeURIComponent(baseAddress)}`);
+      const data = await res.json();
+      if (data.success) {
+        setLatitude(data.latitude);
+        setLongitude(data.longitude);
+      }
+    } catch (err) {
+      console.error('Error geocoding base address:', err);
+    } finally {
+      setIsGeocoding(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,6 +170,8 @@ export default function ProviderRegisterPage() {
           phone,
           licenseNumber,
           baseAddress,
+          latitude,
+          longitude,
           bio,
           maxTravelRadiusMiles: parseFloat(maxTravelRadiusMiles) || 15.0,
         }),
@@ -257,8 +280,18 @@ export default function ProviderRegisterPage() {
               placeholder="123 Main St, Salt Lake City, UT"
               value={baseAddress}
               onChange={(e) => setBaseAddress(e.target.value)}
+              onBlur={handleAddressBlur}
               required
             />
+            {baseAddress && (
+              <div style={{ marginTop: '0.5rem', marginBottom: '1rem' }}>
+                <MapPreview
+                  latitude={latitude}
+                  longitude={longitude}
+                  label={isGeocoding ? "Locating..." : "Your Studio Location"}
+                />
+              </div>
+            )}
 
             <Input
               label="Short Bio / Introduction"
