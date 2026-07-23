@@ -401,9 +401,8 @@ export const Navbar: React.FC<NavbarProps> = ({
 
     // GUEST / Logged Out
     return [
-      { label: 'Find Barbers', href: '/', id: 'HOME' },
-      { label: 'Search Barbers', href: '/search', id: 'CLIENT' },
-      { label: 'For Barbers', href: '/providers', id: 'PORTAL' },
+      { label: 'Home', href: '/', id: 'HOME' },
+      { label: 'Become a Provider', href: '/providers', id: 'PORTAL' },
     ];
   };
 

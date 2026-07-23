@@ -343,11 +343,8 @@ export default function FadeFinderApp() {
                       <Link href="/login">
                         <Button variant="secondary" size="lg">Sign In</Button>
                       </Link>
-                      <Button variant="outline" size="lg" onClick={() => setShowSearchResults(true)}>
-                        Explore All Barbers
-                      </Button>
-                      <Link href="/register?role=PROVIDER" style={{ color: '#2dd4bf', fontWeight: 600, fontSize: '0.9rem', marginLeft: '0.5rem' }}>
-                        For Barbers &rarr;
+                      <Link href="/providers/register">
+                        <Button variant="outline" size="lg">Become a Provider</Button>
                       </Link>
                     </div>
                   </div>
@@ -421,9 +418,17 @@ export default function FadeFinderApp() {
                         <h3 style={{ fontSize: '1.3rem', fontWeight: 800 }}>Featured Top Rated Barbers</h3>
                         <p style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Licensed barbers ready to service your area</p>
                       </div>
-                      <Button variant="outline" size="sm" onClick={() => setShowSearchResults(true)}>
-                        View All Barbers ({barbers.length})
-                      </Button>
+                      {!user ? (
+                        <Link href="/register" style={{ textDecoration: 'none' }}>
+                          <Button variant="outline" size="sm">
+                            Sign Up to Explore
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Button variant="outline" size="sm" onClick={() => setShowSearchResults(true)}>
+                          View All Barbers ({barbers.length})
+                        </Button>
+                      )}
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.25rem' }}>
